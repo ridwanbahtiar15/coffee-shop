@@ -23,21 +23,24 @@ const getAllOrdersProducts = async (req, res) => {
 const addNewOrdersProducts = async (req, res) => {
   try {
     const { body } = req;
+
     const data = await insert(
       body.orders_id,
       body.products_sizes_id,
       body.orders_products_qty,
-      body.hot_or_ice
+      body.hot_or_ice,
+      body.orders_products_subtotal
     );
+
     res.status(200).json({
       msg: "Data has been added!",
-      result: data.rows,
     });
   } catch (error) {
     res.status(500).json({
       msg: "error",
       error,
     });
+    console.log(error);
   }
 };
 
@@ -49,6 +52,7 @@ const updateOrdersProducts = async (req, res) => {
       body.products_sizes_id,
       body.orders_products_qty,
       body.hot_or_ice,
+      body.orders_products_subtotal,
       params.id
     );
     if (data.rowCount == 0) {

@@ -9,6 +9,7 @@ const ordersProductsRouter = require("./orders-products.router");
 const ordersRouter = require("./orders.router");
 const promosRouter = require("./promos.router");
 const deliveriesRouter = require("./deliveries.router");
+const rolesRouter = require("./roles.router");
 
 mainRouter.use("/categories", categoriesRouter);
 mainRouter.use("/products", productsRouter);
@@ -18,5 +19,6 @@ mainRouter.use("/ordersproducts", ordersProductsRouter); // associate table
 mainRouter.use("/orders", ordersRouter);
 mainRouter.use("/promos", promosRouter);
 mainRouter.use("/deliveries", deliveriesRouter);
+mainRouter.use("/roles", rolesRouter);
 
 module.exports = mainRouter;

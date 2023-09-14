@@ -37,7 +37,6 @@ const updateCategories = async (req, res) => {
   try {
     const { body, params } = req;
     const data = await update(body.categories_name, params.id);
-    // console.log(data.rowCount);
     if (data.rowCount == 0) {
       return res.status(500).json({
         msg: "Internal Server Error",
@@ -50,7 +49,6 @@ const updateCategories = async (req, res) => {
     res.status(500).json({
       msg: "Internal Server Error",
     });
-    console.log(error);
   }
 };
 

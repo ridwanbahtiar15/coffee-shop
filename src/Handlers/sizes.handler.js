@@ -1,6 +1,6 @@
-const { getAll, insert, update, del } = require("../Models/products.model");
+const { getAll, insert, update, del } = require("../Models/sizes.model");
 
-const getAllProducts = async (req, res) => {
+const getAllSizes = async (req, res) => {
   try {
     result = await getAll();
     res.status(200).json({
@@ -15,17 +15,10 @@ const getAllProducts = async (req, res) => {
   }
 };
 
-const addNewProducts = async (req, res) => {
+const addNewSizes = async (req, res) => {
   try {
     const { body } = req;
-    const data = await insert(
-      body.products_name,
-      body.products_price,
-      body.products_desc,
-      body.products_stock,
-      body.products_image,
-      body.categories_id
-    );
+    const data = await insert(body.sizes_name, body.sizes_cost);
     res.status(200).json({
       msg: "Data has been added!",
       result: data.rows,
@@ -38,18 +31,10 @@ const addNewProducts = async (req, res) => {
   }
 };
 
-const updateProducts = async (req, res) => {
+const updateSizes = async (req, res) => {
   try {
     const { body, params } = req;
-    const data = await update(
-      body.products_name,
-      body.products_price,
-      body.products_desc,
-      body.products_stock,
-      body.products_image,
-      body.categories_id,
-      params.id
-    );
+    const data = await update(body.sizes_name, body.sizes_cost, params.id);
     if (data.rowCount == 0) {
       return res.status(500).json({
         msg: "Internal Server Error",
@@ -65,25 +50,24 @@ const updateProducts = async (req, res) => {
   }
 };
 
-const deleteProducts = async (req, res) => {
+const deleteSizes = async (req, res) => {
   try {
     const { params } = req;
     const data = await del(params.id);
     res.status(200).json({
-      msg: `Products ${data.rows[0].products_name}, id = ${params.id} has been deleted!`,
+      msg: `Sizes ${data.rows[0].sizes_name}, id = ${params.id} has been deleted!`,
     });
   } catch (error) {
     res.status(500).json({
       msg: "Internal Server Error",
       error,
     });
-    console.log(error);
   }
 };
 
 module.exports = {
-  getAllProducts,
-  addNewProducts,
-  updateProducts,
-  deleteProducts,
+  getAllSizes,
+  addNewSizes,
+  updateSizes,
+  deleteSizes,
 };

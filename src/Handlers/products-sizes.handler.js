@@ -1,6 +1,11 @@
-const { getAll, insert, update, del } = require("../Models/products.model");
+const {
+  getAll,
+  insert,
+  update,
+  del,
+} = require("../Models/products-sizes.model");
 
-const getAllProducts = async (req, res) => {
+const getAllProductsSizes = async (req, res) => {
   try {
     result = await getAll();
     res.status(200).json({
@@ -15,17 +20,10 @@ const getAllProducts = async (req, res) => {
   }
 };
 
-const addNewProducts = async (req, res) => {
+const addNewProductsSizes = async (req, res) => {
   try {
     const { body } = req;
-    const data = await insert(
-      body.products_name,
-      body.products_price,
-      body.products_desc,
-      body.products_stock,
-      body.products_image,
-      body.categories_id
-    );
+    const data = await insert(body.products_id, body.sizes_id);
     res.status(200).json({
       msg: "Data has been added!",
       result: data.rows,
@@ -38,18 +36,10 @@ const addNewProducts = async (req, res) => {
   }
 };
 
-const updateProducts = async (req, res) => {
+const updateProductsSizes = async (req, res) => {
   try {
     const { body, params } = req;
-    const data = await update(
-      body.products_name,
-      body.products_price,
-      body.products_desc,
-      body.products_stock,
-      body.products_image,
-      body.categories_id,
-      params.id
-    );
+    const data = await update(body.products_id, body.sizes_id, params.id);
     if (data.rowCount == 0) {
       return res.status(500).json({
         msg: "Internal Server Error",
@@ -65,12 +55,12 @@ const updateProducts = async (req, res) => {
   }
 };
 
-const deleteProducts = async (req, res) => {
+const deleteProductsSizes = async (req, res) => {
   try {
     const { params } = req;
     const data = await del(params.id);
     res.status(200).json({
-      msg: `Products ${data.rows[0].products_name}, id = ${params.id} has been deleted!`,
+      msg: `Products Sizes id = ${params.id} has been deleted!`,
     });
   } catch (error) {
     res.status(500).json({
@@ -81,8 +71,8 @@ const deleteProducts = async (req, res) => {
 };
 
 module.exports = {
-  getAllProducts,
-  addNewProducts,
-  updateProducts,
-  deleteProducts,
+  getAllProductsSizes,
+  addNewProductsSizes,
+  updateProductsSizes,
+  deleteProductsSizes,
 };

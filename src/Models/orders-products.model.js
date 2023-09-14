@@ -18,7 +18,7 @@ const insert = (ordersId, productsSizesId, qty, hotOrIce, subtotal) => {
 
 const update = (ordersId, productsSizesId, qty, hotOrIce, subtotal, id) => {
   const sql =
-    "update orders_products set orders_id = $1, products_sizes_id = $2, orders_products_qty = $3, hot_or_ice = $4, orders_products_subtotal = $5 where orders_products_id = $6";
+    "update orders_products set orders_id = $1, products_sizes_id = $2, orders_products_qty = $3, hot_or_ice = $4, orders_products_subtotal = $5, updated_at = now() where orders_products_id = $6";
   const values = [ordersId, productsSizesId, qty, hotOrIce, subtotal, id];
   return db.query(sql, values);
 };

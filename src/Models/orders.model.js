@@ -41,7 +41,7 @@ const update = (
   id
 ) => {
   const sql =
-    "update orders set users_id = $1, payment_methods_id = $2, deliveries_id = $3, promos_id = $4, orders_status = $5, orders_total = $6 where orders_id = $7";
+    "update orders set users_id = $1, payment_methods_id = $2, deliveries_id = $3, promos_id = $4, orders_status = $5, orders_total = $6, updated_at = now() where orders_id = $7";
   const values = [
     usersID,
     paymentMethodsId,

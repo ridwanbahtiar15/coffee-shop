@@ -14,7 +14,7 @@ const insert = (productsId, sizesId) => {
 
 const update = (productsId, sizesId, id) => {
   const sql =
-    "update products_sizes set products_id = $1, sizes_id = $2 where products_sizes_id = $3";
+    "update products_sizes set products_id = $1, sizes_id = $2, updated_at = now() where products_sizes_id = $3";
   const values = [productsId, sizesId, id];
   return db.query(sql, values);
 };

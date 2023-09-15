@@ -6,11 +6,13 @@ const {
   addNewProducts,
   updateProducts,
   deleteProducts,
+  getPopularProducts,
 } = require("../Handlers/products.handler");
 
 productsRouter.get("/", getAllProducts);
 productsRouter.post("/", addNewProducts);
 productsRouter.patch("/:id", updateProducts);
 productsRouter.delete("/:id", deleteProducts);
+productsRouter.get("/bestseller", getPopularProducts);
 
 module.exports = productsRouter;

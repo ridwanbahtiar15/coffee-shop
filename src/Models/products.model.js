@@ -88,6 +88,16 @@ const pagination = (page, limit) => {
   return db.query(sql, values);
 };
 
+const getPopular = () => {
+  const sql = `
+  select p.products_id, p.products_name, sum(op.orders_products_qty) as sold ,sum(op.orders_products_subtotal) as profit
+  from orders_products op
+  join products_sizes ps on op.products_sizes_id = ps.products_sizes_id
+  join products p on ps.products_id = p.products_id
+  group by p.products_id;`;
+  return db.query(sql);
+};
+
 module.exports = {
   getAll,
   insert,
@@ -96,4 +106,5 @@ module.exports = {
   findName,
   filterProducts,
   pagination,
+  getPopular,
 };

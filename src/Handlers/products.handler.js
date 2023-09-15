@@ -6,6 +6,7 @@ const {
   findName,
   filterProducts,
   pagination,
+  getPopular,
 } = require("../Models/products.model");
 
 const getAllProducts = async (req, res) => {
@@ -102,9 +103,24 @@ const deleteProducts = async (req, res) => {
   }
 };
 
+const getPopularProducts = async (req, res) => {
+  try {
+    const data = await getPopular();
+    res.status(200).json({
+      msg: "Success",
+      result: data.rows,
+    });
+  } catch (error) {
+    res.status(500).json({
+      msg: "Interval Server Error",
+    });
+  }
+};
+
 module.exports = {
   getAllProducts,
   addNewProducts,
   updateProducts,
   deleteProducts,
+  getPopularProducts,
 };

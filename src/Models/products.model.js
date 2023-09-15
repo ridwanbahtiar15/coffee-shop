@@ -64,7 +64,7 @@ const findName = (productsName) => {
   return db.query(sql, values);
 };
 
-const findProducts = (prodcutsName, category, minRange, maxRange) => {
+const filterProducts = (prodcutsName, category, minRange, maxRange) => {
   const sql = `select p.products_id, p.products_name, p.products_price, p.products_desc, p.products_stock, p.products_image, c.categories_name 
   from products p
   join categories c on p.categories_id = c.categories_id
@@ -75,4 +75,4 @@ const findProducts = (prodcutsName, category, minRange, maxRange) => {
   return db.query(sql, values);
 };
 
-module.exports = { getAll, insert, update, del, findName, findProducts };
+module.exports = { getAll, insert, update, del, findName, filterProducts };

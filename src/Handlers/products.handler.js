@@ -4,14 +4,14 @@ const {
   update,
   del,
   findName,
-  findProducts,
+  filterProducts,
 } = require("../Models/products.model");
 
 const getAllProducts = async (req, res) => {
   try {
     const { query } = req;
     if (query.name && query.category && query.minrange && query.maxrange) {
-      result = await findProducts(
+      result = await filterProducts(
         query.name,
         query.category,
         query.minrange,

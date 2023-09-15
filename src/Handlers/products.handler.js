@@ -1,8 +1,28 @@
-const { getAll, insert, update, del } = require("../Models/products.model");
+const {
+  getAll,
+  insert,
+  update,
+  del,
+  findName,
+  findProducts,
+} = require("../Models/products.model");
 
 const getAllProducts = async (req, res) => {
   try {
-    result = await getAll();
+    const { query } = req;
+    if (query.name && query.category && query.minrange && query.maxrange) {
+      result = await findProducts(
+        query.name,
+        query.category,
+        query.minrange,
+        query.maxrange
+      );
+    } else if (query.name) {
+      result = await findName(query.name);
+    } else {
+      result = await getAll();
+    }
+
     res.status(200).json({
       msg: "Success",
       result: result.rows,

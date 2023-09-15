@@ -57,4 +57,22 @@ const del = (id) => {
   return db.query(sql, values);
 };
 
-module.exports = { getAll, insert, update, del };
+const findName = (productsName) => {
+  const sql = `select p.products_id, p.products_name, p.products_price, p.products_desc, p.products_stock, p.products_image, c.categories_name, p.created_at from products p
+  join categories c on p.categories_id = c.categories_id where products_name like $1`;
+  const values = [`%${productsName}%`];
+  return db.query(sql, values);
+};
+
+const findProducts = (prodcutsName, category, minRange, maxRange) => {
+  const sql = `select p.products_id, p.products_name, p.products_price, p.products_desc, p.products_stock, p.products_image, c.categories_name 
+  from products p
+  join categories c on p.categories_id = c.categories_id
+  where p.products_name like $1
+  and products_price >= $3 and products_price <= $4
+  and c.categories_name = $2`;
+  const values = [`%${prodcutsName}%`, category, minRange, maxRange];
+  return db.query(sql, values);
+};
+
+module.exports = { getAll, insert, update, del, findName, findProducts };

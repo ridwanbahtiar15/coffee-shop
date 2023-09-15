@@ -6,16 +6,16 @@ const getAll = () => {
   return db.query(sql);
 };
 
-const insert = (promosName) => {
-  const sql = `insert into promos (promos_name) values ($1)`;
-  const values = [promosName];
+const insert = (promosName, promosStart, promosEnd) => {
+  const sql = `insert into promos (promos_name, promos_start, promos_end) values ($1, $2, $3)`;
+  const values = [promosName, promosStart, promosEnd];
   return db.query(sql, values);
 };
 
-const update = (promosName, id) => {
+const update = (promosName, promosStart, promosEnd, id) => {
   const sql =
-    "update promos set promos_name = $1, updated_at = now() where promos_id = $2";
-  const values = [promosName, id];
+    "update promos set promos_name = $1, promos_start = $2, promos_end = $3, updated_at = now() where promos_id = $4";
+  const values = [promosName, promosStart, promosEnd, id];
   return db.query(sql, values);
 };
 

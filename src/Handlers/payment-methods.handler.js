@@ -1,6 +1,11 @@
-const { getAll, insert, update, del } = require("../Models/promos.model");
+const {
+  getAll,
+  insert,
+  update,
+  del,
+} = require("../Models/payment-methods.model");
 
-const getAllPromos = async (req, res) => {
+const getAllPaymentMethods = async (req, res) => {
   try {
     result = await getAll();
     res.status(200).json({
@@ -15,36 +20,26 @@ const getAllPromos = async (req, res) => {
   }
 };
 
-const addNewPromos = async (req, res) => {
+const addNewPaymentMethods = async (req, res) => {
   try {
     const { body } = req;
-
-    const data = await insert(
-      body.promos_name,
-      body.promos_start,
-      body.promos_end
-    );
+    const data = await insert(body.payment_methods_name);
     res.status(200).json({
       msg: "Data has been added!",
+      result: data.rows,
     });
   } catch (error) {
     res.status(500).json({
       msg: "error",
       error,
     });
-    console.log(error);
   }
 };
 
-const updatePromos = async (req, res) => {
+const updatePaymentMethods = async (req, res) => {
   try {
     const { body, params } = req;
-    const data = await update(
-      body.promos_name,
-      body.promos_start,
-      body.promos_end,
-      params.id
-    );
+    const data = await update(body.payment_methods_name, params.id);
     if (data.rowCount == 0) {
       return res.status(500).json({
         msg: "Internal Server Error",
@@ -57,15 +52,16 @@ const updatePromos = async (req, res) => {
     res.status(500).json({
       msg: "Internal Server Error",
     });
+    console.log(error);
   }
 };
 
-const deletePromos = async (req, res) => {
+const deletePaymentMethods = async (req, res) => {
   try {
     const { params } = req;
     const data = await del(params.id);
     res.status(200).json({
-      msg: `Promo ${data.rows[0].promos_name}, id = ${params.id} has been deleted!`,
+      msg: `Payment method ${data.rows[0].payment_methods_name}, id = ${params.id} has been deleted!`,
     });
   } catch (error) {
     res.status(500).json({
@@ -76,8 +72,8 @@ const deletePromos = async (req, res) => {
 };
 
 module.exports = {
-  getAllPromos,
-  addNewPromos,
-  updatePromos,
-  deletePromos,
+  getAllPaymentMethods,
+  addNewPaymentMethods,
+  updatePaymentMethods,
+  deletePaymentMethods,
 };

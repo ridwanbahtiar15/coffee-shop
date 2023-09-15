@@ -76,7 +76,7 @@ const filterProducts = (prodcutsName, category, minRange, maxRange) => {
   return db.query(sql, values);
 };
 
-const paginate = (page, limit) => {
+const pagination = (page, limit) => {
   const offset = page * limit - limit;
   const sql = `
   select p.products_id, p.products_name, p.products_price, p.products_desc, p.products_stock, p.products_image, c.categories_name 
@@ -95,5 +95,5 @@ module.exports = {
   del,
   findName,
   filterProducts,
-  paginate,
+  pagination,
 };

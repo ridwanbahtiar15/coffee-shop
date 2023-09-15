@@ -1,8 +1,17 @@
-const { getAll, insert, update, del } = require("../Models/orders.model");
+const {
+  getAll,
+  insert,
+  update,
+  del,
+  pagination,
+} = require("../Models/orders.model");
 
 const getAllOrders = async (req, res) => {
   try {
-    result = await getAll();
+    const { query } = req;
+    query.page && query.limit
+      ? (result = await pagination(query.page, query.limit))
+      : (result = await getAll());
     res.status(200).json({
       msg: "Success",
       result: result.rows,

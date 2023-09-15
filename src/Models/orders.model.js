@@ -60,4 +60,18 @@ const del = (id) => {
   return db.query(sql, values);
 };
 
-module.exports = { getAll, insert, update, del };
+const pagination = (page, limit) => {
+  const offset = page * limit - limit;
+  const sql = `select o.orders_id, u.users_fullname, py.payment_methods_name, d.deliveries_name, pr.promos_name, o.orders_status, o.orders_total
+  from orders o 
+  join users u on o.users_id = u.users_id 
+  join payment_methods py on o.payment_methods_id = py.payment_methods_id 
+  join deliveries d on o.deliveries_id = d.deliveries_id 
+  join promos pr on o.promos_id = pr.promos_id
+  order by o.orders_id asc
+  limit $2 offset $1`;
+  const values = [offset, limit];
+  return db.query(sql, values);
+};
+
+module.exports = { getAll, insert, update, del, pagination };

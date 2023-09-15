@@ -5,7 +5,7 @@ const {
   del,
   findName,
   filterProducts,
-  paginate,
+  pagination,
 } = require("../Models/products.model");
 
 const getAllProducts = async (req, res) => {
@@ -21,7 +21,7 @@ const getAllProducts = async (req, res) => {
     } else if (query.name) {
       result = await findName(query.name);
     } else if (query.page && query.limit) {
-      result = await paginate(query.page, query.limit);
+      result = await pagination(query.page, query.limit);
     } else {
       result = await getAll();
     }
@@ -34,7 +34,6 @@ const getAllProducts = async (req, res) => {
     res.status(500).json({
       msg: "Internal Server Error",
     });
-    console.log(error);
   }
 };
 

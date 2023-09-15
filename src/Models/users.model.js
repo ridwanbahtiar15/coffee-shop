@@ -2,7 +2,11 @@ require("dotenv").config();
 const db = require("../Configs/postgre.js");
 
 const getAll = () => {
-  const sql = `select * from users`;
+  const sql = `
+  select u.users_id, u.users_fullname, u.users_email, u.users_password, u.users_phone, u.users_address, u.users_image, r.roles_name 
+  from users u
+  join roles r on u.roles_id = r.roles_id
+  order by u.users_id asc`;
   return db.query(sql);
 };
 
@@ -59,4 +63,16 @@ const del = (id) => {
   return db.query(sql, values);
 };
 
-module.exports = { getAll, insert, update, del };
+const pagination = (page, limit) => {
+  const offset = page * limit - limit;
+  const sql = `
+  select u.users_id, u.users_fullname, u.users_email, u.users_password, u.users_phone, u.users_address, u.users_image, r.roles_name 
+  from users u
+  join roles r on u.roles_id = r.roles_id
+  order by u.users_id asc
+  limit $2 offset $1`;
+  const values = [offset, limit];
+  return db.query(sql, values);
+};
+
+module.exports = { getAll, insert, update, del, pagination };

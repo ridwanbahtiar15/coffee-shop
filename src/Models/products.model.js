@@ -3,7 +3,7 @@ const db = require("../Configs/postgre.js");
 
 const getAll = () => {
   const sql = `select p.products_id, p.products_name, p.products_price, p.products_desc, p.products_stock, p.products_image, c.categories_name from products p
-  join categories c on p.categories_id = c.categories_id;`;
+  join categories c on p.categories_id = c.categories_id order by p.products_id asc`;
   return db.query(sql);
 };
 
@@ -59,20 +59,41 @@ const del = (id) => {
 
 const findName = (productsName) => {
   const sql = `select p.products_id, p.products_name, p.products_price, p.products_desc, p.products_stock, p.products_image, c.categories_name, p.created_at from products p
-  join categories c on p.categories_id = c.categories_id where products_name like $1`;
+  join categories c on p.categories_id = c.categories_id where products_name like $1 order by p.products_id asc`;
   const values = [`%${productsName}%`];
   return db.query(sql, values);
 };
 
 const filterProducts = (prodcutsName, category, minRange, maxRange) => {
-  const sql = `select p.products_id, p.products_name, p.products_price, p.products_desc, p.products_stock, p.products_image, c.categories_name 
+  const sql = `select p.products_id, p.products_name, p.products_price, p.products_desc, p.products_stock, p.products_image, c.categories_name, p.created_at
   from products p
   join categories c on p.categories_id = c.categories_id
   where p.products_name like $1
   and products_price >= $3 and products_price <= $4
-  and c.categories_name = $2`;
+  and c.categories_name = $2
+  order by p.created_at asc`;
   const values = [`%${prodcutsName}%`, category, minRange, maxRange];
   return db.query(sql, values);
 };
 
-module.exports = { getAll, insert, update, del, findName, filterProducts };
+const paginate = (page, limit) => {
+  const offset = page * limit - limit;
+  const sql = `
+  select p.products_id, p.products_name, p.products_price, p.products_desc, p.products_stock, p.products_image, c.categories_name 
+  from products p
+  join categories c on p.categories_id = c.categories_id 
+  order by p.products_id asc
+  limit $2 offset $1`;
+  const values = [offset, limit];
+  return db.query(sql, values);
+};
+
+module.exports = {
+  getAll,
+  insert,
+  update,
+  del,
+  findName,
+  filterProducts,
+  paginate,
+};

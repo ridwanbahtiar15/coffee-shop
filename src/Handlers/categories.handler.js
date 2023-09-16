@@ -2,7 +2,7 @@ const { getAll, insert, update, del } = require("../Models/categories.model");
 
 const getAllCategories = async (req, res) => {
   try {
-    result = await getAll();
+    const result = await getAll();
     res.status(200).json({
       msg: "Success",
       result: result.rows,

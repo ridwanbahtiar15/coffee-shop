@@ -12,6 +12,7 @@ const {
 const getAllProducts = async (req, res) => {
   try {
     const { query } = req;
+    let result;
     if (query.name && query.category && query.minrange && query.maxrange) {
       result = await filterProducts(
         query.name,

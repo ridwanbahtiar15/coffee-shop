@@ -9,6 +9,7 @@ const {
 const getAllUsers = async (req, res) => {
   try {
     const { query } = req;
+    let result;
     query.page && query.limit
       ? (result = await pagination(query.page, query.limit))
       : (result = await getAll());

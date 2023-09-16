@@ -2,7 +2,7 @@ const { getAll, insert, update, del } = require("../Models/promos.model");
 
 const getAllPromos = async (req, res) => {
   try {
-    result = await getAll();
+    const result = await getAll();
     res.status(200).json({
       msg: "Success",
       result: result.rows,
@@ -18,12 +18,7 @@ const getAllPromos = async (req, res) => {
 const addNewPromos = async (req, res) => {
   try {
     const { body } = req;
-
-    const data = await insert(
-      body.promos_name,
-      body.promos_start,
-      body.promos_end
-    );
+    await insert(body.promos_name, body.promos_start, body.promos_end);
     res.status(200).json({
       msg: "Data has been added!",
     });

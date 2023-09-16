@@ -7,7 +7,7 @@ const {
 
 const getAllProductsSizes = async (req, res) => {
   try {
-    result = await getAll();
+    const result = await getAll();
     res.status(200).json({
       msg: "Success",
       result: result.rows,
@@ -58,7 +58,7 @@ const updateProductsSizes = async (req, res) => {
 const deleteProductsSizes = async (req, res) => {
   try {
     const { params } = req;
-    const data = await del(params.id);
+    await del(params.id);
     res.status(200).json({
       msg: `Products Sizes id = ${params.id} has been deleted!`,
     });

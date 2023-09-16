@@ -7,7 +7,7 @@ const {
 
 const getAllOrdersProducts = async (req, res) => {
   try {
-    result = await getAll();
+    const result = await getAll();
     res.status(200).json({
       msg: "Success",
       result: result.rows,
@@ -23,8 +23,7 @@ const getAllOrdersProducts = async (req, res) => {
 const addNewOrdersProducts = async (req, res) => {
   try {
     const { body } = req;
-
-    const data = await insert(
+    await insert(
       body.orders_id,
       body.products_sizes_id,
       body.orders_products_qty,

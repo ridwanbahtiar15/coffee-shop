@@ -9,9 +9,12 @@ const {
 const getAllOrders = async (req, res) => {
   try {
     const { query } = req;
-    query.page && query.limit
-      ? (result = await pagination(query.page, query.limit))
-      : (result = await getAll());
+    let result;
+    if (query.page && query.limit) {
+      result = await pagination(query.page, query.limit);
+    } else {
+      result = await getAll();
+    }
     res.status(200).json({
       msg: "Success",
       result: result.rows,
@@ -78,7 +81,7 @@ const updateOrders = async (req, res) => {
 const deleteOrders = async (req, res) => {
   try {
     const { params } = req;
-    const data = await del(params.id);
+    await del(params.id);
     res.status(200).json({
       msg: `Orders id = ${params.id} has been deleted!`,
     });

@@ -2,7 +2,7 @@ const { getAll, insert, update, del } = require("../Models/roles.model");
 
 const getAllRoles = async (req, res) => {
   try {
-    result = await getAll();
+    const result = await getAll();
     res.status(200).json({
       msg: "Success",
       result: result.rows,
@@ -18,7 +18,7 @@ const getAllRoles = async (req, res) => {
 const addNewRoles = async (req, res) => {
   try {
     const { body } = req;
-    const data = await insert(body.roles_name);
+    await insert(body.roles_name);
     res.status(200).json({
       msg: "Data has been added!",
     });

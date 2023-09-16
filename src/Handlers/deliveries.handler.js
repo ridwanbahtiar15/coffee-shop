@@ -2,7 +2,7 @@ const { getAll, insert, update, del } = require("../Models/deliveries.model");
 
 const getAllDeliveries = async (req, res) => {
   try {
-    result = await getAll();
+    const result = await getAll();
     res.status(200).json({
       msg: "Success",
       result: result.rows,
@@ -18,7 +18,7 @@ const getAllDeliveries = async (req, res) => {
 const addNewDeliveries = async (req, res) => {
   try {
     const { body } = req;
-    const data = await insert(body.deliveries_name, body.deliveries_cost);
+    await insert(body.deliveries_name, body.deliveries_cost);
     res.status(200).json({
       msg: "Data has been added!",
     });

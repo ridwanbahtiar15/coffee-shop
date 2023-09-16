@@ -1,4 +1,3 @@
-require("dotenv").config();
 const db = require("../Configs/postgre.js");
 
 const getAll = () => {

@@ -13,8 +13,6 @@ const rolesRouter = require("./roles.router");
 const usersRouter = require("./users.router");
 const paymentMethodsRouter = require("./payment-methods.router");
 
-// cors
-
 mainRouter.use("/categories", categoriesRouter);
 mainRouter.use("/products", productsRouter);
 mainRouter.use("/sizes", sizesRouter);

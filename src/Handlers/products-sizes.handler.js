@@ -8,6 +8,12 @@ const {
 const getAllProductsSizes = async (req, res) => {
   try {
     const result = await getAll();
+    if (result.rows.length == 0) {
+      return res.status(404).json({
+        msg: "Products Sizes not found!",
+        result: [],
+      });
+    }
     res.status(200).json({
       msg: "Success",
       result: result.rows,
@@ -16,22 +22,19 @@ const getAllProductsSizes = async (req, res) => {
     res.status(500).json({
       msg: "Internal Server Error",
     });
-    console.log(error);
   }
 };
 
 const addNewProductsSizes = async (req, res) => {
   try {
     const { body } = req;
-    const data = await insert(body.products_id, body.sizes_id);
+    await insert(body.products_id, body.sizes_id);
     res.status(200).json({
       msg: "Data has been added!",
-      result: data.rows,
     });
   } catch (error) {
     res.status(500).json({
-      msg: "error",
-      error,
+      msg: "Internal Server Error",
     });
   }
 };
@@ -65,7 +68,6 @@ const deleteProductsSizes = async (req, res) => {
   } catch (error) {
     res.status(500).json({
       msg: "Internal Server Error",
-      error,
     });
   }
 };

@@ -8,6 +8,12 @@ const {
 const getAllPaymentMethods = async (req, res) => {
   try {
     const result = await getAll();
+    if (result.rows.length == 0) {
+      return res.status(404).json({
+        msg: "Payment Methods not found!",
+        result: [],
+      });
+    }
     res.status(200).json({
       msg: "Success",
       result: result.rows,
@@ -16,22 +22,19 @@ const getAllPaymentMethods = async (req, res) => {
     res.status(500).json({
       msg: "Internal Server Error",
     });
-    console.log(error);
   }
 };
 
 const addNewPaymentMethods = async (req, res) => {
   try {
     const { body } = req;
-    const data = await insert(body.payment_methods_name);
+    await insert(body.payment_methods_name);
     res.status(200).json({
       msg: "Data has been added!",
-      result: data.rows,
     });
   } catch (error) {
     res.status(500).json({
-      msg: "error",
-      error,
+      msg: "Internal Server Error",
     });
   }
 };
@@ -46,13 +49,12 @@ const updatePaymentMethods = async (req, res) => {
       });
     }
     res.status(200).json({
-      msg: `Data has been updated!`,
+      msg: "Data has been updated!",
     });
   } catch (error) {
     res.status(500).json({
       msg: "Internal Server Error",
     });
-    console.log(error);
   }
 };
 
@@ -66,7 +68,6 @@ const deletePaymentMethods = async (req, res) => {
   } catch (error) {
     res.status(500).json({
       msg: "Internal Server Error",
-      error,
     });
   }
 };

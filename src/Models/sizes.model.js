@@ -1,7 +1,7 @@
 const db = require("../Configs/postgre.js");
 
 const getAll = () => {
-  const sql = `select * from sizes`;
+  const sql = "select * from sizes";
   return db.query(sql);
 };
 

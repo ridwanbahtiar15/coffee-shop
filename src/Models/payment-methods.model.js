@@ -1,12 +1,12 @@
 const db = require("../Configs/postgre.js");
 
 const getAll = () => {
-  const sql = `select * from payment_methods`;
+  const sql = "select * from payment_methods";
   return db.query(sql);
 };
 
 const insert = (paymentMethodsName) => {
-  const sql = `insert into payment_methods (payment_methods_name) values ($1)`;
+  const sql = "insert into payment_methods (payment_methods_name) values ($1)";
   const values = [paymentMethodsName];
   return db.query(sql, values);
 };

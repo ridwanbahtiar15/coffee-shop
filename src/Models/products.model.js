@@ -14,7 +14,8 @@ const insert = (
   prodcutsImage,
   categoriesId
 ) => {
-  const sql = `insert into products (products_name, products_price, products_desc,products_stock, products_image, categories_id) values ($1, $2, $3, $4, $5, $6)`;
+  const sql =
+    "insert into products (products_name, products_price, products_desc,products_stock, products_image, categories_id) values ($1, $2, $3, $4, $5, $6)";
   const values = [
     prodcutsName,
     prodcutsPrice,

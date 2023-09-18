@@ -3,6 +3,12 @@ const { getAll, insert, update, del } = require("../Models/categories.model");
 const getAllCategories = async (req, res) => {
   try {
     const result = await getAll();
+    if (result.rows.length == 0) {
+      return res.status(404).json({
+        msg: "Categories not found!",
+        result: [],
+      });
+    }
     res.status(200).json({
       msg: "Success",
       result: result.rows,
@@ -18,11 +24,9 @@ const getAllCategories = async (req, res) => {
 const addNewCategories = async (req, res) => {
   try {
     const { body } = req;
-    // console.log(body.categories_name);
-    const data = await insert(body.categories_name);
+    await insert(body.categories_name);
     res.status(200).json({
       msg: "Data has been added!",
-      result: data.rows,
     });
   } catch (error) {
     res.status(500).json({
@@ -43,7 +47,7 @@ const updateCategories = async (req, res) => {
       });
     }
     res.status(200).json({
-      msg: `Data has been updated!`,
+      msg: "Data has been updated!",
     });
   } catch (error) {
     res.status(500).json({
@@ -57,12 +61,11 @@ const deleteCategories = async (req, res) => {
     const { params } = req;
     const data = await del(params.id);
     res.status(200).json({
-      msg: `Book ${data.rows[0].categories_name}, id = ${params.id} has been deleted!`,
+      msg: `Category ${data.rows[0].categories_name}, id = ${params.id} has been deleted!`,
     });
   } catch (error) {
     res.status(500).json({
       msg: "Internal Server Error",
-      error,
     });
   }
 };

@@ -8,6 +8,12 @@ const {
 const getAllOrdersProducts = async (req, res) => {
   try {
     const result = await getAll();
+    if (result.rows.length == 0) {
+      return res.status(404).json({
+        msg: "Orders Products not found!",
+        result: [],
+      });
+    }
     res.status(200).json({
       msg: "Success",
       result: result.rows,
@@ -16,7 +22,6 @@ const getAllOrdersProducts = async (req, res) => {
     res.status(500).json({
       msg: "Internal Server Error",
     });
-    console.log(error);
   }
 };
 
@@ -36,10 +41,8 @@ const addNewOrdersProducts = async (req, res) => {
     });
   } catch (error) {
     res.status(500).json({
-      msg: "error",
-      error,
+      msg: "Internal Server Error",
     });
-    console.log(error);
   }
 };
 
@@ -79,9 +82,7 @@ const deleteOrdersProducts = async (req, res) => {
   } catch (error) {
     res.status(500).json({
       msg: "Internal Server Error",
-      error,
     });
-    console.log(error);
   }
 };
 

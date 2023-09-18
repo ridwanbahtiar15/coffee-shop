@@ -1,12 +1,14 @@
 const db = require("../Configs/postgre.js");
 
 const getAll = () => {
-  const sql = `select ps.products_sizes_id, p.products_name, s.sizes_name from products_sizes ps join products p on ps.products_id = p.products_id join sizes s on ps.sizes_id = s.sizes_id order by ps.products_sizes_id asc`;
+  const sql =
+    "select ps.products_sizes_id, p.products_name, s.sizes_name from products_sizes ps join products p on ps.products_id = p.products_id join sizes s on ps.sizes_id = s.sizes_id order by ps.products_sizes_id asc";
   return db.query(sql);
 };
 
 const insert = (productsId, sizesId) => {
-  const sql = `insert into products_sizes (products_id, sizes_id) values ($1, $2)`;
+  const sql =
+    "insert into products_sizes (products_id, sizes_id) values ($1, $2)";
   const values = [productsId, sizesId];
   return db.query(sql, values);
 };

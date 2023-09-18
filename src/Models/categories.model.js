@@ -1,12 +1,12 @@
 const db = require("../Configs/postgre.js");
 
 const getAll = () => {
-  const sql = `select * from categories`;
+  const sql = "select * from categories";
   return db.query(sql);
 };
 
 const insert = (categoriesName) => {
-  const sql = `insert into categories (categories_name) values ($1)`;
+  const sql = "insert into categories (categories_name) values ($1)";
   const values = [categoriesName];
   return db.query(sql, values);
 };

@@ -13,6 +13,14 @@ const getAllUsers = async (req, res) => {
     query.page && query.limit
       ? (result = await pagination(query.page, query.limit))
       : (result = await getAll());
+
+    if (result.rows.length == 0) {
+      return res.status(404).json({
+        msg: "Users not found!",
+        result: [],
+      });
+    }
+
     res.status(200).json({
       msg: "Success",
       result: result.rows,
@@ -21,7 +29,6 @@ const getAllUsers = async (req, res) => {
     res.status(500).json({
       msg: "Internal Server Error",
     });
-    console.log(error);
   }
 };
 
@@ -42,8 +49,7 @@ const addNewUsers = async (req, res) => {
     });
   } catch (error) {
     res.status(500).json({
-      msg: "error",
-      error,
+      msg: "Internal Server Error",
     });
   }
 };
@@ -67,7 +73,7 @@ const updateUsers = async (req, res) => {
       });
     }
     res.status(200).json({
-      msg: `Data has been updated!`,
+      msg: "Data has been updated!",
     });
   } catch (error) {
     res.status(500).json({
@@ -81,14 +87,12 @@ const deleteUsers = async (req, res) => {
     const { params } = req;
     const data = await del(params.id);
     res.status(200).json({
-      msg: `User ${data.rows[0].users_name}, id = ${params.id} has been deleted!`,
+      msg: `User ${data.rows[0].users_fullname}, id = ${params.id} has been deleted!`,
     });
   } catch (error) {
     res.status(500).json({
       msg: "Internal Server Error",
-      error,
     });
-    console.log(error);
   }
 };
 

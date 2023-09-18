@@ -10,7 +10,8 @@ const getAll = () => {
 };
 
 const insert = (ordersId, productsSizesId, qty, hotOrIce, subtotal) => {
-  const sql = `insert into orders_products (orders_id, products_sizes_id, orders_products_qty, hot_or_ice, orders_products_subtotal) values ($1, $2, $3, $4, $5)`;
+  const sql =
+    "insert into orders_products (orders_id, products_sizes_id, orders_products_qty, hot_or_ice, orders_products_subtotal) values ($1, $2, $3, $4, $5)";
   const values = [ordersId, productsSizesId, qty, hotOrIce, subtotal];
   return db.query(sql, values);
 };

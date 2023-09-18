@@ -18,7 +18,8 @@ const insert = (
   ordersStatus,
   ordersTotal
 ) => {
-  const sql = `insert into orders (users_id, payment_methods_id, deliveries_id, promos_id, orders_status, orders_total) values ($1, $2, $3, $4, $5, $6)`;
+  const sql =
+    "insert into orders (users_id, payment_methods_id, deliveries_id, promos_id, orders_status, orders_total) values ($1, $2, $3, $4, $5, $6)";
   const values = [
     usersID,
     paymentMethodsId,

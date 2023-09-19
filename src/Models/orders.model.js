@@ -10,6 +10,13 @@ const getAll = () => {
   return db.query(sql);
 };
 
+const getById = (id) => {
+  const sql =
+    "select o.payment_methods_id, o.deliveries_id, o.promos_id, o.orders_status, o.orders_total from orders o where orders_id = $1";
+  const values = [id];
+  return db.query(sql, values);
+};
+
 const insert = (
   usersID,
   paymentMethodsId,
@@ -32,7 +39,6 @@ const insert = (
 };
 
 const update = (
-  usersID,
   paymentMethodsId,
   deliveriesId,
   promosId,
@@ -41,9 +47,8 @@ const update = (
   id
 ) => {
   const sql =
-    "update orders set users_id = $1, payment_methods_id = $2, deliveries_id = $3, promos_id = $4, orders_status = $5, orders_total = $6, updated_at = now() where orders_id = $7";
+    "update orders set payment_methods_id = $1, deliveries_id = $2, promos_id = $3, orders_status = $4, orders_total = $5, updated_at = now() where orders_id = $6";
   const values = [
-    usersID,
     paymentMethodsId,
     deliveriesId,
     promosId,
@@ -74,4 +79,4 @@ const pagination = (page, limit) => {
   return db.query(sql, values);
 };
 
-module.exports = { getAll, insert, update, del, pagination };
+module.exports = { getAll, getById, insert, update, del, pagination };

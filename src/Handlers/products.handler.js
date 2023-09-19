@@ -1,5 +1,6 @@
 const {
   getAll,
+  getById,
   insert,
   update,
   del,
@@ -70,20 +71,38 @@ const addNewProducts = async (req, res) => {
 const updateProducts = async (req, res) => {
   try {
     const { body, params } = req;
+    const dataById = await getById(params.id);
+
+    let productsName = body.products_name;
+    let productsPrice = body.products_price;
+    let productsDesc = body.products_desc;
+    let productsStock = body.products_stock;
+    let productsImage = body.products_image;
+    let categoriesID = body.categories_id;
+
+    if (!productsName) productsName = dataById.rows[0].products_name;
+    if (!productsPrice) productsPrice = dataById.rows[0].products_price;
+    if (!productsDesc) productsDesc = dataById.rows[0].products_desc;
+    if (!productsStock) productsStock = dataById.rows[0].products_stock;
+    if (!productsImage) productsImage = dataById.rows[0].products_image;
+    if (!categoriesID) categoriesID = dataById.rows[0].categories_id;
+
     const data = await update(
-      body.products_name,
-      body.products_price,
-      body.products_desc,
-      body.products_stock,
-      body.products_image,
-      body.categories_id,
+      productsName,
+      productsPrice,
+      productsDesc,
+      productsStock,
+      productsImage,
+      categoriesID,
       params.id
     );
+
     if (data.rowCount == 0) {
       return res.status(500).json({
         msg: "Internal Server Error",
       });
     }
+
     res.status(200).json({
       msg: "Data has been updated!",
     });
@@ -91,6 +110,7 @@ const updateProducts = async (req, res) => {
     res.status(500).json({
       msg: "Internal Server Error",
     });
+    console.log(error);
   }
 };
 

@@ -1,5 +1,6 @@
 const {
   getAll,
+  getById,
   insert,
   update,
   del,
@@ -36,7 +37,7 @@ const getAllOrders = async (req, res) => {
 const addNewOrders = async (req, res) => {
   try {
     const { body } = req;
-    const data = await insert(
+    await insert(
       body.users_id,
       body.payment_methods_id,
       body.deliveries_id,
@@ -46,7 +47,6 @@ const addNewOrders = async (req, res) => {
     );
     res.status(200).json({
       msg: "Data has been added!",
-      result: data.rows,
     });
   } catch (error) {
     res.status(500).json({
@@ -58,20 +58,36 @@ const addNewOrders = async (req, res) => {
 const updateOrders = async (req, res) => {
   try {
     const { body, params } = req;
+    const dataById = await getById(params.id);
+
+    let paymentMethodsId = body.payment_methods_id;
+    let deliveriesId = body.deliveries_id;
+    let promosID = body.promos_id;
+    let ordersStatus = body.orders_status;
+    let ordersTotal = body.orders_total;
+
+    if (!paymentMethodsId)
+      paymentMethodsId = dataById.rows[0].payment_methods_id;
+    if (!deliveriesId) deliveriesId = dataById.rows[0].deliveries_id;
+    if (!promosID) promosID = dataById.rows[0].promos_id;
+    if (!ordersStatus) ordersStatus = dataById.rows[0].orders_status;
+    if (!ordersTotal) ordersTotal = dataById.rows[0].orders_total;
+
     const data = await update(
-      body.users_id,
-      body.payment_methods_id,
-      body.deliveries_id,
-      body.promos_id,
-      body.orders_status,
-      body.orders_total,
+      paymentMethodsId,
+      deliveriesId,
+      promosID,
+      ordersStatus,
+      ordersTotal,
       params.id
     );
+
     if (data.rowCount == 0) {
       return res.status(500).json({
         msg: "Internal Server Error",
       });
     }
+
     res.status(200).json({
       msg: `Data has been updated!`,
     });
@@ -79,6 +95,7 @@ const updateOrders = async (req, res) => {
     res.status(500).json({
       msg: "Internal Server Error",
     });
+    console.log(error);
   }
 };
 

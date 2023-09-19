@@ -1,4 +1,10 @@
-const { getAll, insert, update, del } = require("../Models/roles.model");
+const {
+  getAll,
+  getById,
+  insert,
+  update,
+  del,
+} = require("../Models/roles.model");
 
 const getAllRoles = async (req, res) => {
   try {
@@ -37,7 +43,11 @@ const addNewRoles = async (req, res) => {
 const updateRoles = async (req, res) => {
   try {
     const { body, params } = req;
-    const data = await update(body.roles_name, params.id);
+    const dataById = await getById(params.id);
+    let rolesName = body.roles_name;
+    if (!rolesName) rolesName = dataById.rows[0].roles_name;
+
+    const data = await update(rolesName, params.id);
     if (data.rowCount == 0) {
       return res.status(500).json({
         msg: "Internal Server Error",

@@ -1,4 +1,10 @@
-const { getAll, insert, update, del } = require("../Models/sizes.model");
+const {
+  getAll,
+  getById,
+  insert,
+  update,
+  del,
+} = require("../Models/sizes.model");
 
 const getAllSizes = async (req, res) => {
   try {
@@ -37,7 +43,15 @@ const addNewSizes = async (req, res) => {
 const updateSizes = async (req, res) => {
   try {
     const { body, params } = req;
-    const data = await update(body.sizes_name, body.sizes_cost, params.id);
+    const dataById = await getById(params.id);
+
+    let sizesName = body.sizes_name;
+    let sizesCost = body.sizes_cost;
+
+    if (!sizesName) sizesName = dataById.rows[0].sizes_name;
+    if (!sizesCost) sizesCost = dataById.rows[0].sizes_cost;
+
+    const data = await update(sizesName, sizesCost, params.id);
     if (data.rowCount == 0) {
       return res.status(500).json({
         msg: "Internal Server Error",
@@ -50,6 +64,7 @@ const updateSizes = async (req, res) => {
     res.status(500).json({
       msg: "Internal Server Error",
     });
+    console.log(error);
   }
 };
 

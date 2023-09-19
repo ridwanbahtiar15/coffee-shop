@@ -5,6 +5,12 @@ const getAll = () => {
   return db.query(sql);
 };
 
+const getById = (id) => {
+  const sql = "select r.roles_name from roles r where r.roles_id = $1";
+  const values = [id];
+  return db.query(sql, values);
+};
+
 const insert = (rolesName) => {
   const sql = "insert into roles (roles_name) values ($1)";
   const values = [rolesName];
@@ -24,4 +30,4 @@ const del = (id) => {
   return db.query(sql, values);
 };
 
-module.exports = { getAll, insert, update, del };
+module.exports = { getAll, getById, insert, update, del };

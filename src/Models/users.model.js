@@ -9,6 +9,13 @@ const getAll = () => {
   return db.query(sql);
 };
 
+const getById = (id) => {
+  const sql =
+    "select u.users_fullname, u.users_email, u.users_password, u.users_phone, u.users_address, u.users_image, u.roles_id from users u where users_id = $1";
+  const values = [id];
+  return db.query(sql, values);
+};
+
 const insert = (
   usersFullName,
   usersEmail,
@@ -74,4 +81,4 @@ const pagination = (page, limit) => {
   return db.query(sql, values);
 };
 
-module.exports = { getAll, insert, update, del, pagination };
+module.exports = { getAll, getById, insert, update, del, pagination };

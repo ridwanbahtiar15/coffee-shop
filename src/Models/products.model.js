@@ -1,9 +1,16 @@
 const db = require("../Configs/postgre.js");
 
 const getAll = () => {
-  const sql = `select p.products_id, p.products_name, p.products_price, p.products_desc, p.products_stock, p.products_image, c.categories_name from products p
-  join categories c on p.categories_id = c.categories_id order by p.products_id asc`;
+  const sql =
+    "select p.products_id, p.products_name, p.products_price, products_desc, p.products_stock, p.products_image, c.categories_name from products p join categories c on p.categories_id = c.categories_id order by p.products_id asc";
   return db.query(sql);
+};
+
+const getById = (id) => {
+  const sql =
+    "select p.products_name, p.products_price, p.products_desc, p.products_stock, p.products_image, p.categories_id from products p where p.products_id = $1";
+  const values = [id];
+  return db.query(sql, values);
 };
 
 const insert = (
@@ -94,12 +101,14 @@ const getPopular = () => {
   from orders_products op
   join products_sizes ps on op.products_sizes_id = ps.products_sizes_id
   join products p on ps.products_id = p.products_id
-  group by p.products_id;`;
+  group by p.products_id
+  order by sold desc`;
   return db.query(sql);
 };
 
 module.exports = {
   getAll,
+  getById,
   insert,
   update,
   del,

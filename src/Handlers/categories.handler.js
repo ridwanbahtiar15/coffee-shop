@@ -1,4 +1,10 @@
-const { getAll, insert, update, del } = require("../Models/categories.model");
+const {
+  getAll,
+  getById,
+  insert,
+  update,
+  del,
+} = require("../Models/categories.model");
 
 const getAllCategories = async (req, res) => {
   try {
@@ -17,7 +23,6 @@ const getAllCategories = async (req, res) => {
     res.status(500).json({
       msg: "Internal Server Error",
     });
-    console.log(error);
   }
 };
 
@@ -30,17 +35,20 @@ const addNewCategories = async (req, res) => {
     });
   } catch (error) {
     res.status(500).json({
-      msg: "error",
-      error,
+      msg: "Internal Server Error",
     });
-    console.log(error);
   }
 };
 
 const updateCategories = async (req, res) => {
   try {
     const { body, params } = req;
-    const data = await update(body.categories_name, params.id);
+    const dataById = await getById(params.id);
+    let categoriesName = body.categories_name;
+    if (!categoriesName) categoriesName = dataById.rows[0].categories_name;
+
+    const data = await update(categoriesName, params.id);
+
     if (data.rowCount == 0) {
       return res.status(500).json({
         msg: "Internal Server Error",

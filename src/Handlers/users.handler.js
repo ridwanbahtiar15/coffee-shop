@@ -1,5 +1,6 @@
 const {
   getAll,
+  getById,
   insert,
   update,
   del,
@@ -57,14 +58,32 @@ const addNewUsers = async (req, res) => {
 const updateUsers = async (req, res) => {
   try {
     const { body, params } = req;
+    const dataById = await getById(params.id);
+
+    let usersFullName = body.users_fullname;
+    let usersEmail = body.users_email;
+    let usersPassword = body.users_password;
+    let usersPhone = body.users_phone;
+    let usersAddress = body.users_address;
+    let usersImage = body.users_image;
+    let rolesId = body.roles_id;
+
+    if (!usersFullName) usersFullName = dataById.rows[0].users_fullname;
+    if (!usersEmail) usersEmail = dataById.rows[0].users_email;
+    if (!usersPassword) usersPassword = dataById.rows[0].users_password;
+    if (!usersPhone) usersPhone = dataById.rows[0].users_phone;
+    if (!usersAddress) usersAddress = dataById.rows[0].users_address;
+    if (!usersImage) usersImage = dataById.rows[0].users_image;
+    if (!rolesId) rolesId = dataById.rows[0].roles_id;
+
     const data = await update(
-      body.users_fullname,
-      body.users_email,
-      body.users_password,
-      body.users_phone,
-      body.users_address,
-      body.users_image,
-      body.roles_id,
+      usersFullName,
+      usersEmail,
+      usersPassword,
+      usersPhone,
+      usersAddress,
+      usersImage,
+      rolesId,
       params.id
     );
     if (data.rowCount == 0) {
@@ -79,6 +98,7 @@ const updateUsers = async (req, res) => {
     res.status(500).json({
       msg: "Internal Server Error",
     });
+    console.log(error);
   }
 };
 

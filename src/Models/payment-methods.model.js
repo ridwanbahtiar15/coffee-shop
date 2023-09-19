@@ -5,6 +5,13 @@ const getAll = () => {
   return db.query(sql);
 };
 
+const getById = (id) => {
+  const sql =
+    "select p.payment_methods_name from payment_methods p where p.payment_methods_id = $1";
+  const values = [id];
+  return db.query(sql, values);
+};
+
 const insert = (paymentMethodsName) => {
   const sql = "insert into payment_methods (payment_methods_name) values ($1)";
   const values = [paymentMethodsName];
@@ -25,4 +32,4 @@ const del = (id) => {
   return db.query(sql, values);
 };
 
-module.exports = { getAll, insert, update, del };
+module.exports = { getAll, getById, insert, update, del };

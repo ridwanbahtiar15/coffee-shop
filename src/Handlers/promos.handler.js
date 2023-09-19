@@ -1,11 +1,17 @@
-const { getAll, insert, update, del } = require("../Models/promos.model");
+const {
+  getAll,
+  getById,
+  insert,
+  update,
+  del,
+} = require("../Models/promos.model");
 
 const getAllPromos = async (req, res) => {
   try {
     const result = await getAll();
     if (result.rows.length == 0) {
       return res.status(404).json({
-        msg: "Promos not found!",
+        msg: "Promo not found!",
         result: [],
       });
     }
@@ -37,17 +43,24 @@ const addNewPromos = async (req, res) => {
 const updatePromos = async (req, res) => {
   try {
     const { body, params } = req;
-    const data = await update(
-      body.promos_name,
-      body.promos_start,
-      body.promos_end,
-      params.id
-    );
+    const dataById = await getById(params.id);
+
+    let promosName = body.promos_name;
+    let promosStart = body.promos_start;
+    let promosEnd = body.promos_end;
+
+    if (!promosName) promosName = dataById.rows[0].promos_name;
+    if (!promosStart) promosStart = dataById.rows[0].promos_start;
+    if (!promosEnd) promosEnd = dataById.rows[0].promos_end;
+
+    const data = await update(promosName, promosStart, promosEnd, params.id);
+
     if (data.rowCount == 0) {
       return res.status(500).json({
         msg: "Internal Server Error",
       });
     }
+
     res.status(200).json({
       msg: "Data has been updated!",
     });

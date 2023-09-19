@@ -1,5 +1,6 @@
 const {
   getAll,
+  getById,
   insert,
   update,
   del,
@@ -42,12 +43,19 @@ const addNewPaymentMethods = async (req, res) => {
 const updatePaymentMethods = async (req, res) => {
   try {
     const { body, params } = req;
-    const data = await update(body.payment_methods_name, params.id);
+    const dataById = await getById(params.id);
+    let paymentMethodsName = body.payment_methods_name;
+    if (!paymentMethodsName)
+      paymentMethodsName = dataById.rows[0].payment_methods_name;
+
+    const data = await update(paymentMethodsName, params.id);
+
     if (data.rowCount == 0) {
       return res.status(500).json({
         msg: "Internal Server Error",
       });
     }
+
     res.status(200).json({
       msg: "Data has been updated!",
     });

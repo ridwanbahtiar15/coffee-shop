@@ -4,30 +4,44 @@ const {
   insert,
   update,
   del,
-  findName,
-  filterProducts,
-  pagination,
   getPopular,
+  filtersProducts,
 } = require("../Models/products.model");
 
 const getAllProducts = async (req, res) => {
   try {
     const { query } = req;
     let result;
-    if (query.name && query.category && query.minrange && query.maxrange) {
-      result = await filterProducts(
+
+    if (
+      query.name ||
+      query.category ||
+      query.minrange ||
+      query.maxrange ||
+      query.page ||
+      query.limit
+    ) {
+      result = await filtersProducts(
         query.name,
         query.category,
         query.minrange,
-        query.maxrange
+        query.maxrange,
+        query.page,
+        query.limit
       );
-    } else if (query.name) {
-      result = await findName(query.name);
-    } else if (query.page && query.limit) {
-      result = await pagination(query.page, query.limit);
-    } else {
-      result = await getAll();
+      if (result.rows.length == 0) {
+        return res.status(404).json({
+          msg: "Products not found!",
+          result: [],
+        });
+      }
+      return res.status(200).json({
+        msg: "Success",
+        result: result.rows,
+      });
     }
+
+    result = await getAll();
 
     if (result.rows.length == 0) {
       return res.status(404).json({
@@ -35,7 +49,6 @@ const getAllProducts = async (req, res) => {
         result: [],
       });
     }
-
     res.status(200).json({
       msg: "Success",
       result: result.rows,
@@ -44,6 +57,7 @@ const getAllProducts = async (req, res) => {
     res.status(500).json({
       msg: "Internal Server Error",
     });
+    console.log(error);
   }
 };
 

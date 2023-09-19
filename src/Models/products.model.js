@@ -64,37 +64,6 @@ const del = (id) => {
   return db.query(sql, values);
 };
 
-const findName = (productsName) => {
-  const sql = `select p.products_id, p.products_name, p.products_price, p.products_desc, p.products_stock, p.products_image, c.categories_name, p.created_at from products p
-  join categories c on p.categories_id = c.categories_id where products_name like $1 order by p.products_id asc`;
-  const values = [`%${productsName}%`];
-  return db.query(sql, values);
-};
-
-const filterProducts = (prodcutsName, category, minRange, maxRange) => {
-  const sql = `select p.products_id, p.products_name, p.products_price, p.products_desc, p.products_stock, p.products_image, c.categories_name, p.created_at
-  from products p
-  join categories c on p.categories_id = c.categories_id
-  where p.products_name like $1
-  and products_price >= $3 and products_price <= $4
-  and c.categories_name = $2
-  order by p.created_at asc`;
-  const values = [`%${prodcutsName}%`, category, minRange, maxRange];
-  return db.query(sql, values);
-};
-
-const pagination = (page, limit) => {
-  const offset = page * limit - limit;
-  const sql = `
-  select p.products_id, p.products_name, p.products_price, p.products_desc, p.products_stock, p.products_image, c.categories_name 
-  from products p
-  join categories c on p.categories_id = c.categories_id 
-  order by p.products_id asc
-  limit $2 offset $1`;
-  const values = [offset, limit];
-  return db.query(sql, values);
-};
-
 const getPopular = () => {
   const sql = `
   select p.products_id, p.products_name, sum(op.orders_products_qty) as sold ,sum(op.orders_products_subtotal) as profit
@@ -106,14 +75,84 @@ const getPopular = () => {
   return db.query(sql);
 };
 
+const filtersProducts = (
+  productsName,
+  category,
+  minRange = 10000,
+  maxRange = 100000,
+  page = 1,
+  limit = 99
+) => {
+  // jika tidak ada name dan category
+  if (!productsName && !category) {
+    const offset = page * limit - limit;
+    const sql = `select p.products_id, p.products_name, p.products_price, p.products_desc, p.products_stock, p.products_image, c.categories_name, p.created_at
+    from products p
+    join categories c on p.categories_id = c.categories_id
+    where products_price >= $1 and products_price <= $2
+    order by p.created_at asc
+    limit $3 offset $4`;
+    const values = [minRange, maxRange, limit, offset];
+    return db.query(sql, values);
+  }
+
+  // jika tidak ada category
+  if (!category) {
+    const offset = page * limit - limit;
+    const sql = `select p.products_id, p.products_name, p.products_price, p.products_desc, p.products_stock, p.products_image, c.categories_name, p.created_at
+    from products p
+    join categories c on p.categories_id = c.categories_id
+    where p.products_name like $1
+    and products_price >= $2 and products_price <= $3
+    order by p.created_at asc
+    limit $4 offset $5`;
+    const values = [`%${productsName}%`, minRange, maxRange, limit, offset];
+    return db.query(sql, values);
+  }
+
+  // jika tidak ada name
+  if (!productsName) {
+    const offset = page * limit - limit;
+    const sql = `select p.products_id, p.products_name, p.products_price, p.products_desc, p.products_stock, p.products_image, c.categories_name, p.created_at
+    from products p
+    join categories c on p.categories_id = c.categories_id
+    where c.categories_name = $1
+    and products_price >= $2 and products_price <= $3
+    order by p.created_at asc
+    limit $4 offset $5`;
+    const values = [category, minRange, maxRange, limit, offset];
+    return db.query(sql, values);
+  }
+
+  // jika data lengkap
+  if (productsName && category) {
+    const offset = page * limit - limit;
+    const sql = `select p.products_id, p.products_name, p.products_price, p.products_desc, p.products_stock, p.products_image, c.categories_name, p.created_at
+    from products p
+    join categories c on p.categories_id = c.categories_id
+    where p.products_name like $1
+    and products_price >= $3 and products_price <= $4
+    and c.categories_name = $2
+    order by p.created_at asc
+    limit $5 offset $6`;
+    const values = [
+      `%${productsName}%`,
+      category,
+      minRange,
+      maxRange,
+      limit,
+      offset,
+    ];
+    return db.query(sql, values);
+  }
+};
+
 module.exports = {
   getAll,
   getById,
   insert,
   update,
   del,
-  findName,
-  filterProducts,
-  pagination,
   getPopular,
+  filtersProducts,
 };

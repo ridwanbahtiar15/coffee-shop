@@ -13,6 +13,6 @@ productsRouter.get("/", getAllProducts);
 productsRouter.post("/", addNewProducts);
 productsRouter.patch("/:id", updateProducts);
 productsRouter.delete("/:id", deleteProducts);
-productsRouter.get("/bestseller", getPopularProducts);
+productsRouter.get("/popular", getPopularProducts);
 
 module.exports = productsRouter;

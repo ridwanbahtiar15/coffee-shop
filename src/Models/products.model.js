@@ -66,7 +66,7 @@ const del = (id) => {
 
 const getPopular = () => {
   const sql = `
-  select p.products_id, p.products_name, sum(op.orders_products_qty) as sold ,sum(op.orders_products_subtotal) as profit
+  select p.products_id, p.products_name, sum(op.orders_products_qty) as sold
   from orders_products op
   join products_sizes ps on op.products_sizes_id = ps.products_sizes_id
   join products p on ps.products_id = p.products_id
@@ -86,7 +86,7 @@ const filtersProducts = (
   // jika tidak ada name dan category
   if (!productsName && !category) {
     const offset = page * limit - limit;
-    const sql = `select p.products_id, p.products_name, p.products_price, p.products_desc, p.products_stock, p.products_image, c.categories_name, p.created_at
+    const sql = `select p.products_id, p.products_name, p.products_price, p.products_desc, p.products_stock, p.products_image, c.categories_name
     from products p
     join categories c on p.categories_id = c.categories_id
     where products_price >= $1 and products_price <= $2
@@ -99,7 +99,7 @@ const filtersProducts = (
   // jika tidak ada category
   if (!category) {
     const offset = page * limit - limit;
-    const sql = `select p.products_id, p.products_name, p.products_price, p.products_desc, p.products_stock, p.products_image, c.categories_name, p.created_at
+    const sql = `select p.products_id, p.products_name, p.products_price, p.products_desc, p.products_stock, p.products_image, c.categories_name
     from products p
     join categories c on p.categories_id = c.categories_id
     where p.products_name like $1
@@ -113,7 +113,7 @@ const filtersProducts = (
   // jika tidak ada name
   if (!productsName) {
     const offset = page * limit - limit;
-    const sql = `select p.products_id, p.products_name, p.products_price, p.products_desc, p.products_stock, p.products_image, c.categories_name, p.created_at
+    const sql = `select p.products_id, p.products_name, p.products_price, p.products_desc, p.products_stock, p.products_image, c.categories_name
     from products p
     join categories c on p.categories_id = c.categories_id
     where c.categories_name = $1
@@ -127,7 +127,7 @@ const filtersProducts = (
   // jika data lengkap
   if (productsName && category) {
     const offset = page * limit - limit;
-    const sql = `select p.products_id, p.products_name, p.products_price, p.products_desc, p.products_stock, p.products_image, c.categories_name, p.created_at
+    const sql = `select p.products_id, p.products_name, p.products_price, p.products_desc, p.products_stock, p.products_image, c.categories_name
     from products p
     join categories c on p.categories_id = c.categories_id
     where p.products_name like $1

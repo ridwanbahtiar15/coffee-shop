@@ -135,6 +135,11 @@ const deleteProducts = async (req, res) => {
       msg: `Products ${data.rows[0].products_name}, id = ${params.id} has been deleted!`,
     });
   } catch (error) {
+    if (error.code == "23503") {
+      return res.status(500).json({
+        msg: "Error Constraint",
+      });
+    }
     res.status(500).json({
       msg: "Internal Server Error",
     });

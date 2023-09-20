@@ -64,7 +64,6 @@ const updateDeliveries = async (req, res) => {
     res.status(500).json({
       msg: "Internal Server Error",
     });
-    // console.log(error);
   }
 };
 
@@ -76,6 +75,11 @@ const deleteDeliveries = async (req, res) => {
       msg: `Deliveries ${data.rows[0].deliveries_name}, id = ${params.id} has been deleted!`,
     });
   } catch (error) {
+    if (error.code == "23503") {
+      return res.status(500).json({
+        msg: "Error Constraint",
+      });
+    }
     res.status(500).json({
       msg: "Internal Server Error",
     });

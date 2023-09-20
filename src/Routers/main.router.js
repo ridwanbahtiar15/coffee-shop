@@ -4,7 +4,6 @@ const mainRouter = express.Router();
 const categoriesRouter = require("./categories.router");
 const productsRouter = require("./products.router");
 const sizesRouter = require("./sizes.router");
-const productsSizesRouter = require("./products-sizes.router");
 const ordersRouter = require("./orders.router");
 const promosRouter = require("./promos.router");
 const deliveriesRouter = require("./deliveries.router");
@@ -15,7 +14,6 @@ const paymentMethodsRouter = require("./payment-methods.router");
 mainRouter.use("/categories", categoriesRouter);
 mainRouter.use("/products", productsRouter);
 mainRouter.use("/sizes", sizesRouter);
-mainRouter.use("/productssizes", productsSizesRouter); // associate table
 mainRouter.use("/orders", ordersRouter);
 mainRouter.use("/promos", promosRouter);
 mainRouter.use("/deliveries", deliveriesRouter);

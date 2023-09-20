@@ -4,15 +4,14 @@ const {
   insert,
   update,
   del,
-  pagination,
 } = require("../Models/users.model");
 
 const getAllUsers = async (req, res) => {
   try {
     const { query } = req;
     let result;
-    query.page && query.limit
-      ? (result = await pagination(query.page, query.limit))
+    query.page || query.limit
+      ? (result = await getAll(query.page, query.limit))
       : (result = await getAll());
 
     if (result.rows.length == 0) {

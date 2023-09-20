@@ -68,8 +68,7 @@ const getPopular = () => {
   const sql = `
   select p.products_id, p.products_name, sum(op.orders_products_qty) as sold
   from orders_products op
-  join products_sizes ps on op.products_sizes_id = ps.products_sizes_id
-  join products p on ps.products_id = p.products_id
+  join products p on op.products_id = p.products_id
   group by p.products_id
   order by sold desc`;
   return db.query(sql);

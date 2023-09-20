@@ -1,12 +1,15 @@
 const db = require("../Configs/postgre.js");
 
-const getAll = () => {
+const getAll = (page = 1, limit = 99) => {
+  const offset = page * limit - limit;
   const sql = `
   select u.users_id, u.users_fullname, u.users_email, u.users_password, u.users_phone, u.users_address, u.users_image, r.roles_name 
   from users u
   join roles r on u.roles_id = r.roles_id
-  order by u.users_id asc`;
-  return db.query(sql);
+  order by u.users_id asc
+  offset $1 limit $2`;
+  const values = [offset, limit];
+  return db.query(sql, values);
 };
 
 const getById = (id) => {

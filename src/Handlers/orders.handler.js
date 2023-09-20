@@ -4,18 +4,15 @@ const {
   insert,
   update,
   del,
-  pagination,
 } = require("../Models/orders.model");
 
 const getAllOrders = async (req, res) => {
   try {
     const { query } = req;
     let result;
-    if (query.page && query.limit) {
-      result = await pagination(query.page, query.limit);
-    } else {
-      result = await getAll();
-    }
+    query.page || query.limit
+      ? (result = await getAll(query.page, query.limit))
+      : (result = await getAll());
 
     if (result.rows.length == 0) {
       return res.status(404).json({

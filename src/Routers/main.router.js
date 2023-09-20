@@ -10,6 +10,7 @@ const deliveriesRouter = require("./deliveries.router");
 const rolesRouter = require("./roles.router");
 const usersRouter = require("./users.router");
 const paymentMethodsRouter = require("./payment-methods.router");
+const authRouter = require("./auth.router");
 
 mainRouter.use("/categories", categoriesRouter);
 mainRouter.use("/products", productsRouter);
@@ -20,5 +21,6 @@ mainRouter.use("/deliveries", deliveriesRouter);
 mainRouter.use("/roles", rolesRouter);
 mainRouter.use("/users", usersRouter);
 mainRouter.use("/paymentmethods", paymentMethodsRouter);
+mainRouter.use("/auth", authRouter);
 
 module.exports = mainRouter;

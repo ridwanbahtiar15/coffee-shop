@@ -29,6 +29,11 @@ const getAllRoles = async (req, res) => {
 const addNewRoles = async (req, res) => {
   try {
     const { body } = req;
+    if (!body.roles_name) {
+      return res.status(404).json({
+        msg: "Some values not found!",
+      });
+    }
     await insert(body.roles_name);
     res.status(200).json({
       msg: "Data has been added!",

@@ -29,6 +29,11 @@ const getAllSizes = async (req, res) => {
 const addNewSizes = async (req, res) => {
   try {
     const { body } = req;
+    if (!body.sizes_name || !body.sizes_cost) {
+      return res.status(404).json({
+        msg: "Some values not found!",
+      });
+    }
     await insert(body.sizes_name, body.sizes_cost);
     res.status(200).json({
       msg: "Data has been added!",

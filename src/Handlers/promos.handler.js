@@ -29,6 +29,11 @@ const getAllPromos = async (req, res) => {
 const addNewPromos = async (req, res) => {
   try {
     const { body } = req;
+    if (!body.promos_name || !body.promos_start || !body.promos_end) {
+      return res.status(404).json({
+        msg: "Some values not found!",
+      });
+    }
     await insert(body.promos_name, body.promos_start, body.promos_end);
     res.status(200).json({
       msg: "Data has been added!",

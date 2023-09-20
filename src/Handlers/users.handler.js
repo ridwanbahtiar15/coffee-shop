@@ -35,6 +35,19 @@ const getAllUsers = async (req, res) => {
 const addNewUsers = async (req, res) => {
   try {
     const { body } = req;
+    if (
+      !body.users_fullname ||
+      !body.users_email ||
+      !body.users_password ||
+      !body.users_phone ||
+      !body.users_address ||
+      !body.users_image ||
+      !body.roles_id
+    ) {
+      return res.status(404).json({
+        msg: "Some values not found!",
+      });
+    }
     await insert(
       body.users_fullname,
       body.users_email,

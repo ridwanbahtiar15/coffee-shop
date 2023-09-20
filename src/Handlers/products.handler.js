@@ -63,6 +63,18 @@ const getAllProducts = async (req, res) => {
 const addNewProducts = async (req, res) => {
   try {
     const { body } = req;
+    if (
+      !body.products_name ||
+      !body.products_price ||
+      !body.products_desc ||
+      !body.products_stock ||
+      !body.products_image ||
+      !body.categories_id
+    ) {
+      return res.status(404).json({
+        msg: "Some values not found!",
+      });
+    }
     await insert(
       body.products_name,
       body.products_price,

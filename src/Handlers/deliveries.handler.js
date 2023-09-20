@@ -29,6 +29,11 @@ const getAllDeliveries = async (req, res) => {
 const addNewDeliveries = async (req, res) => {
   try {
     const { body } = req;
+    if (!body.deliveries_name || !body.deliveries_cost) {
+      return res.status(404).json({
+        msg: "Some values not found!",
+      });
+    }
     await insert(body.deliveries_name, body.deliveries_cost);
     res.status(200).json({
       msg: "Data has been added!",

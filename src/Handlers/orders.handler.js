@@ -34,6 +34,18 @@ const getAllOrders = async (req, res) => {
 const addNewOrders = async (req, res) => {
   try {
     const { body } = req;
+    if (
+      !body.users_id ||
+      !body.payment_methods_id ||
+      !body.deliveries_id ||
+      !body.promos_id ||
+      !body.orders_status ||
+      !body.orders_total
+    ) {
+      return res.status(404).json({
+        msg: "Some values not found!",
+      });
+    }
     await insert(
       body.users_id,
       body.payment_methods_id,

@@ -3,7 +3,7 @@ const {
   getById,
   insert,
   update,
-  del,
+  softDelete,
 } = require("../Models/users.model");
 
 const getAllUsers = async (req, res) => {
@@ -104,14 +104,15 @@ const updateUsers = async (req, res) => {
 const deleteUsers = async (req, res) => {
   try {
     const { params } = req;
-    const data = await del(params.id);
+    const data = await softDelete(params.id);
     res.status(200).json({
-      msg: `User ${data.rows[0].users_fullname}, id = ${params.id} has been deleted!`,
+      msg: `User ${data.rows[0].users_fullname}, id = ${params.id} has been soft deleted!`,
     });
   } catch (error) {
     res.status(500).json({
       msg: "Internal Server Error",
     });
+    console.log(error);
   }
 };
 

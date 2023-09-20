@@ -6,6 +6,7 @@ const getAll = (page = 1, limit = 99) => {
   select u.users_id, u.users_fullname, u.users_email, u.users_password, u.users_phone, u.users_address, u.users_image, r.roles_name 
   from users u
   join roles r on u.roles_id = r.roles_id
+  where deleted_at is NULL
   order by u.users_id asc
   offset $1 limit $2`;
   const values = [offset, limit];
@@ -66,8 +67,10 @@ const update = (
   return db.query(sql, values);
 };
 
-const del = (id) => {
-  const sql = "delete from users where users_id = $1 returning users_fullname";
+// soft delete
+const softDelete = (id) => {
+  const sql =
+    "update users set deleted_at = now() where users_id = $1 returning users_fullname";
   const values = [id];
   return db.query(sql, values);
 };
@@ -84,4 +87,4 @@ const pagination = (page, limit) => {
   return db.query(sql, values);
 };
 
-module.exports = { getAll, getById, insert, update, del, pagination };
+module.exports = { getAll, getById, insert, update, softDelete, pagination };

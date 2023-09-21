@@ -21,25 +21,85 @@ const getById = (id) => {
   return db.query(sql, values);
 };
 
-const insert = (
-  usersID,
+const insert = async (
+  userId,
   paymentMethodsId,
   deliveriesId,
-  promosId,
+  promosID,
   ordersStatus,
-  ordersTotal
+  ordersTotal,
+  productsId,
+  sizesId,
+  ordersProductsQty,
+  ordersProductsSubtotal,
+  hotOrIce
 ) => {
-  const sql =
-    "insert into orders (users_id, payment_methods_id, deliveries_id, promos_id, orders_status, orders_total) values ($1, $2, $3, $4, $5, $6)";
-  const values = [
-    usersID,
-    paymentMethodsId,
-    deliveriesId,
-    promosId,
-    ordersStatus,
-    ordersTotal,
-  ];
-  return db.query(sql, values);
+  const client = await db.connect();
+
+  try {
+    await client.query("BEGIN");
+    // order
+    const sqlOrder =
+      "insert into orders (users_id, payment_methods_id, deliveries_id, promos_id, orders_status, orders_total) values ($1, $2, $3, $4, $5, $6) returning orders_id";
+    const valuesOrder = [
+      userId,
+      paymentMethodsId,
+      deliveriesId,
+      promosID,
+      ordersStatus,
+      ordersTotal,
+    ];
+    const order = await client.query(sqlOrder, valuesOrder);
+
+    // order products
+    const sqlOrderProducts =
+      "insert into orders_products (orders_id, products_id, sizes_id, orders_products_qty, orders_products_subtotal, hot_or_ice) values ($1, $2, $3, $4, $5, $6) returning orders_products_qty, products_id";
+    const valuesOrderProducts = [
+      order.rows[0].orders_id,
+      productsId,
+      sizesId,
+      ordersProductsQty,
+      ordersProductsSubtotal,
+      hotOrIce,
+    ];
+    const orderProducts = await client.query(
+      sqlOrderProducts,
+      valuesOrderProducts
+    );
+
+    // get product price
+    const sqlProducts =
+      "select products_price from products where products_id = $1";
+    const valuesProducts = [orderProducts.rows[0].products_id];
+    const products = await client.query(sqlProducts, valuesProducts);
+
+    // count subtotal order products
+    const price = products.rows[0].products_price;
+    const qty = orderProducts.rows[0].orders_products_qty;
+    const subtotal = price * qty;
+
+    // update subtotal orders products
+    const sqlUpdateSubtotal =
+      "update orders_products set orders_products_subtotal = $1 where orders_id = $2 returning orders_products_subtotal";
+    const valuesUpdate = [subtotal, order.rows[0].orders_id];
+    const result = await client.query(sqlUpdateSubtotal, valuesUpdate);
+
+    // update total order
+    const sqlUpdateTotal =
+      "update orders set orders_total = $1 where orders_id = $2";
+    const valuesUpdateTotal = [
+      result.rows[0].orders_products_subtotal,
+      order.rows[0].orders_id,
+    ];
+    await client.query(sqlUpdateTotal, valuesUpdateTotal);
+
+    await client.query("COMMIT");
+  } catch (error) {
+    await client.query("ROLLBACK");
+    throw error;
+  } finally {
+    client.release();
+  }
 };
 
 const update = (

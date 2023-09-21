@@ -1,6 +1,10 @@
-const db = require("../Configs/postgre.js");
-
-const { getAll, getById, update, del } = require("../Models/orders.model");
+const {
+  getAll,
+  getById,
+  insert,
+  update,
+  del,
+} = require("../Models/orders.model");
 
 const getAllOrders = async (req, res) => {
   try {
@@ -27,106 +31,30 @@ const getAllOrders = async (req, res) => {
   }
 };
 
-// const addNewOrders = async (req, res) => {
-//   try {
-//     const { body } = req;
-//     if (
-//       !body.users_id ||
-//       !body.payment_methods_id ||
-//       !body.deliveries_id ||
-//       !body.promos_id ||
-//       !body.orders_status ||
-//       !body.orders_total
-//     ) {
-//       return res.status(404).json({
-//         msg: "Some values not found!",
-//       });
-//     }
-//     await insert(
-//       body.users_id,
-//       body.payment_methods_id,
-//       body.deliveries_id,
-//       body.promos_id,
-//       body.orders_status,
-//       body.orders_total
-//     );
-//     res.status(200).json({
-//       msg: "Data has been added!",
-//     });
-//   } catch (error) {
-//     res.status(500).json({
-//       msg: "Internal Server Error",
-//     });
-//   }
-// };
-
-const addNewOrder = async (req) => {
-  const client = await db.connect();
-  const { body } = req;
-
+const addNewOrder = async (req, res) => {
   try {
-    await client.query("BEGIN");
-    // order
-    const sqlOrder =
-      "insert into orders (users_id, payment_methods_id, deliveries_id, promos_id, orders_status, orders_total) values ($1, $2, $3, $4, $5, $6) returning orders_id";
-    const valuesOrder = [
+    const { body } = req;
+    await insert(
       body.users_id,
       body.payment_methods_id,
       body.deliveries_id,
       body.promos_id,
       body.orders_status,
       body.orders_total,
-    ];
-    const order = await client.query(sqlOrder, valuesOrder);
-
-    // order products
-    const sqlOrderProducts =
-      "insert into orders_products (orders_id, products_id, sizes_id, orders_products_qty, orders_products_subtotal, hot_or_ice) values ($1, $2, $3, $4, $5, $6) returning orders_products_qty, products_id";
-    const valuesOrderProducts = [
-      order.rows[0].orders_id,
       body.products_id,
       body.sizes_id,
       body.orders_products_qty,
       body.orders_products_subtotal,
-      body.hot_or_ice,
-    ];
-    const orderProducts = await client.query(
-      sqlOrderProducts,
-      valuesOrderProducts
+      body.hot_or_ice
     );
-
-    // get product price
-    const sqlProducts =
-      "select products_price from products where products_id = $1";
-    const valuesProducts = [orderProducts.rows[0].products_id];
-    const products = await client.query(sqlProducts, valuesProducts);
-
-    // count subtotal order products
-    const price = products.rows[0].products_price;
-    const qty = orderProducts.rows[0].orders_products_qty;
-    const subtotal = price * qty;
-
-    // update subtotal orders products
-    const sqlUpdateSubtotal =
-      "update orders_products set orders_products_subtotal = $1 where orders_id = $2 returning orders_products_subtotal";
-    const valuesUpdate = [subtotal, order.rows[0].orders_id];
-    const result = await client.query(sqlUpdateSubtotal, valuesUpdate);
-
-    // update total order
-    const sqlUpdateTotal =
-      "update orders set orders_total = $1 where orders_id = $2";
-    const valuesUpdateTotal = [
-      result.rows[0].orders_products_subtotal,
-      order.rows[0].orders_id,
-    ];
-    await client.query(sqlUpdateTotal, valuesUpdateTotal);
-
-    await client.query("COMMIT");
+    res.status(200).json({
+      msg: "Data has been added!",
+    });
   } catch (error) {
-    await client.query("ROLLBACK");
-    throw error;
-  } finally {
-    client.release();
+    res.status(500).json({
+      msg: "Internal Server Error",
+    });
+    console.log(error);
   }
 };
 

@@ -12,7 +12,9 @@ const usersRouter = require("./users.router");
 const paymentMethodsRouter = require("./payment-methods.router");
 const authRouter = require("./auth.router");
 
-mainRouter.use("/categories", categoriesRouter);
+const { isLogin } = require("../Middlewares/authorization");
+
+mainRouter.use("/categories", isLogin, categoriesRouter);
 mainRouter.use("/products", productsRouter);
 mainRouter.use("/sizes", sizesRouter);
 mainRouter.use("/orders", ordersRouter);

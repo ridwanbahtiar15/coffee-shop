@@ -22,4 +22,11 @@ const createUser = (
   return db.query(sql, values);
 };
 
-module.exports = { createUser };
+const getUserByEmail = (usersEmail) => {
+  const sql =
+    "select users_fullname, users_email, users_password, roles_id from users where users_email = $1";
+  const values = [usersEmail];
+  return db.query(sql, values);
+};
+
+module.exports = { createUser, getUserByEmail };

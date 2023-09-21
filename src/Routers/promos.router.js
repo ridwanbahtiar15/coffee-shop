@@ -1,5 +1,6 @@
 const express = require("express");
 const promosRouter = express.Router();
+const { isLogin, isAdmin } = require("../Middlewares/authorization");
 
 const {
   getAllPromos,
@@ -9,8 +10,8 @@ const {
 } = require("../Handlers/promos.handler");
 
 promosRouter.get("/", getAllPromos);
-promosRouter.post("/", addNewPromos);
-promosRouter.patch("/:id", updatePromos);
-promosRouter.delete("/:id", deletePromos);
+promosRouter.post("/", isLogin, isAdmin, addNewPromos);
+promosRouter.patch("/:id", isLogin, isAdmin, updatePromos);
+promosRouter.delete("/:id", isLogin, isAdmin, deletePromos);
 
 module.exports = promosRouter;

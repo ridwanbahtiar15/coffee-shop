@@ -31,7 +31,7 @@ const getAllOrders = async (req, res) => {
   }
 };
 
-const addNewOrder = async (req, res) => {
+const addNewOrders = async (req, res) => {
   try {
     const { body } = req;
     await insert(
@@ -98,7 +98,6 @@ const updateOrders = async (req, res) => {
     res.status(500).json({
       msg: "Internal Server Error",
     });
-    console.log(error);
   }
 };
 
@@ -123,7 +122,7 @@ const deleteOrders = async (req, res) => {
 
 module.exports = {
   getAllOrders,
-  addNewOrder,
+  addNewOrders,
   updateOrders,
   deleteOrders,
 };

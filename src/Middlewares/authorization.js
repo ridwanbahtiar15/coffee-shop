@@ -15,11 +15,11 @@ const isLogin = (req, res, next) => {
       switch (err.name) {
         case "TokenExpiredError":
           return res.status(401).json({
-            msg: "Access ended, Please login again",
+            msg: "Access ended, Please login again!",
           });
         case "NotBeforeError":
           return res.status(401).json({
-            msg: "Your access not started yet, Please access on time",
+            msg: "Your access not started yet, Please access on time!",
           });
       }
       return res.status(403).json({
@@ -31,4 +31,14 @@ const isLogin = (req, res, next) => {
   });
 };
 
-module.exports = { isLogin };
+const isAdmin = (req, res, next) => {
+  const rolesId = req.userInfo.roles_id;
+  if (rolesId != 1) {
+    return res.status(401).json({
+      msg: "You dont have access!",
+    });
+  }
+  next();
+};
+
+module.exports = { isLogin, isAdmin };

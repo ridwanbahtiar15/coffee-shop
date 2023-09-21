@@ -1,5 +1,6 @@
 const express = require("express");
 const deliveriesRouter = express.Router();
+const { isLogin, isAdmin } = require("../Middlewares/authorization");
 
 const {
   getAllDeliveries,
@@ -9,8 +10,8 @@ const {
 } = require("../Handlers/deliveries.handler");
 
 deliveriesRouter.get("/", getAllDeliveries);
-deliveriesRouter.post("/", addNewDeliveries);
-deliveriesRouter.patch("/:id", updateDeliveries);
-deliveriesRouter.delete("/:id", deleteDeliveries);
+deliveriesRouter.post("/", isLogin, isAdmin, addNewDeliveries);
+deliveriesRouter.patch("/:id", isLogin, isAdmin, updateDeliveries);
+deliveriesRouter.delete("/:id", isLogin, isAdmin, deleteDeliveries);
 
 module.exports = deliveriesRouter;

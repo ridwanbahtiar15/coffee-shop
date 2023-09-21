@@ -1,5 +1,6 @@
 const express = require("express");
 const sizesRouter = express.Router();
+const { isLogin, isAdmin } = require("../Middlewares/authorization");
 
 const {
   getAllSizes,
@@ -9,8 +10,8 @@ const {
 } = require("../Handlers/sizes.handler");
 
 sizesRouter.get("/", getAllSizes);
-sizesRouter.post("/", addNewSizes);
-sizesRouter.patch("/:id", updateSizes);
-sizesRouter.delete("/:id", deleteSizes);
+sizesRouter.post("/", isLogin, isAdmin, addNewSizes);
+sizesRouter.patch("/:id", isLogin, isAdmin, updateSizes);
+sizesRouter.delete("/:id", isLogin, isAdmin, deleteSizes);
 
 module.exports = sizesRouter;

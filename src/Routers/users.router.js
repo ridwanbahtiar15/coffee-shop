@@ -1,5 +1,6 @@
 const express = require("express");
 const usersRouter = express.Router();
+const { isLogin, isAdmin } = require("../Middlewares/authorization");
 
 const {
   getAllUsers,
@@ -8,9 +9,9 @@ const {
   deleteUsers,
 } = require("../Handlers/users.handler");
 
-usersRouter.get("/", getAllUsers);
-usersRouter.post("/", addNewUsers);
-usersRouter.patch("/:id", updateUsers);
-usersRouter.delete("/:id", deleteUsers);
+usersRouter.get("/", isLogin, isAdmin, getAllUsers);
+usersRouter.post("/", isLogin, isAdmin, addNewUsers);
+usersRouter.patch("/:id", isLogin, isAdmin, updateUsers);
+usersRouter.delete("/:id", isLogin, isAdmin, deleteUsers);
 
 module.exports = usersRouter;

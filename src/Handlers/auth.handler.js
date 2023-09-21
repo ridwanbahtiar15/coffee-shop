@@ -69,7 +69,7 @@ const login = async (req, res) => {
       users_email,
       roles_id,
     };
-    jwt.sign(payload, jwtKey, { expiresIn: "5m", issuer }, (err, token) => {
+    jwt.sign(payload, jwtKey, { expiresIn: "10m", issuer }, (err, token) => {
       if (err) throw err;
       res.status(200).json({
         msg: `Welcome ${users_fullname}`,

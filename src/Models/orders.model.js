@@ -1,4 +1,5 @@
 const db = require("../Configs/postgre.js");
+// const client = await db.connect();
 
 const getAll = (page = 1, limit = 99) => {
   const sql = `select o.orders_id, u.users_fullname, py.payment_methods_name, d.deliveries_name, pr.promos_name, o.orders_status, o.orders_total

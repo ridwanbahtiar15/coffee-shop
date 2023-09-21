@@ -3,13 +3,13 @@ const ordersRouter = express.Router();
 
 const {
   getAllOrders,
-  addNewOrders,
+  addNewOrder,
   updateOrders,
   deleteOrders,
 } = require("../Handlers/orders.handler");
 
 ordersRouter.get("/", getAllOrders);
-ordersRouter.post("/", addNewOrders);
+ordersRouter.post("/", addNewOrder);
 ordersRouter.patch("/:id", updateOrders);
 ordersRouter.delete("/:id", deleteOrders);
 

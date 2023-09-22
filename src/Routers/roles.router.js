@@ -1,6 +1,6 @@
 const express = require("express");
 const rolesRouter = express.Router();
-const { isLogin, isAdmin } = require("../Middlewares/authorization");
+const { isLogin, authUsers } = require("../Middlewares/authorization");
 
 const {
   getAllRoles,
@@ -9,9 +9,9 @@ const {
   deleteRoles,
 } = require("../Handlers/roles.handler");
 
-rolesRouter.get("/", isLogin, isAdmin, getAllRoles);
-rolesRouter.post("/", isLogin, isAdmin, addNewRoles);
-rolesRouter.patch("/:id", isLogin, isAdmin, updateRoles);
-rolesRouter.delete("/:id", isLogin, isAdmin, deleteRoles);
+rolesRouter.get("/", isLogin, authUsers([1]), getAllRoles);
+rolesRouter.post("/", isLogin, authUsers([1]), addNewRoles);
+rolesRouter.patch("/:id", isLogin, authUsers([1]), updateRoles);
+rolesRouter.delete("/:id", isLogin, authUsers([1]), deleteRoles);
 
 module.exports = rolesRouter;

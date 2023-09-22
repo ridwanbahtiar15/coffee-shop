@@ -3,7 +3,7 @@ const db = require("../Configs/postgre.js");
 const getAll = (page = 1, limit = 99) => {
   const offset = page * limit - limit;
   const sql = `
-  select u.users_id, u.users_fullname, u.users_email, u.users_password, u.users_phone, u.users_address, u.users_image, r.roles_name 
+  select u.users_id, u.users_fullname, u.users_email, u.users_phone, u.users_address, u.users_image, r.roles_name 
   from users u
   join roles r on u.roles_id = r.roles_id
   where deleted_at is NULL
@@ -16,6 +16,13 @@ const getAll = (page = 1, limit = 99) => {
 const getById = (id) => {
   const sql =
     "select u.users_fullname, u.users_email, u.users_password, u.users_phone, u.users_address, u.users_image, u.roles_id from users u where users_id = $1";
+  const values = [id];
+  return db.query(sql, values);
+};
+
+const getUserProfile = (id) => {
+  const sql =
+    "select u.users_fullname, u.users_email, u.users_phone, u.users_address, u.users_image, r.roles_name from users u join roles r on u.roles_id = r.roles_id where users_id = $1";
   const values = [id];
   return db.query(sql, values);
 };
@@ -75,16 +82,11 @@ const softDelete = (id) => {
   return db.query(sql, values);
 };
 
-const pagination = (page, limit) => {
-  const offset = page * limit - limit;
-  const sql = `
-  select u.users_id, u.users_fullname, u.users_email, u.users_password, u.users_phone, u.users_address, u.users_image, r.roles_name 
-  from users u
-  join roles r on u.roles_id = r.roles_id
-  order by u.users_id asc
-  limit $2 offset $1`;
-  const values = [offset, limit];
-  return db.query(sql, values);
+module.exports = {
+  getAll,
+  getById,
+  getUserProfile,
+  insert,
+  update,
+  softDelete,
 };
-
-module.exports = { getAll, getById, insert, update, softDelete, pagination };

@@ -31,14 +31,16 @@ const isLogin = (req, res, next) => {
   });
 };
 
-const isAdmin = (req, res, next) => {
-  const rolesId = req.userInfo.roles_id;
-  if (rolesId != 1) {
-    return res.status(401).json({
-      msg: "You dont have access!",
-    });
-  }
-  next();
+const authUsers = (permissions) => {
+  return (req, res, next) => {
+    if (permissions.includes(parseInt(req.userInfo.roles_id))) {
+      return next();
+    }
+    return res.status(401).json({ msg: "You dont have permission!" });
+  };
 };
 
-module.exports = { isLogin, isAdmin };
+module.exports = {
+  isLogin,
+  authUsers,
+};

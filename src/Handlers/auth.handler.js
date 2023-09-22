@@ -57,14 +57,14 @@ const register = async (req, res) => {
 const login = async (req, res) => {
   const { body } = req;
   try {
-    const result = await getUserByEmail(users_email);
+    const result = await getUserByEmail(body.users_email);
     // check data
     if (!result.rows.length)
       return res.status(404).json({
         msg: "Email not registered!",
       });
 
-    const { users_fullname, users_email, users_password, roles_id } =
+    const { users_id, users_fullname, users_email, users_password, roles_id } =
       result.rows[0];
 
     // check password
@@ -76,6 +76,7 @@ const login = async (req, res) => {
 
     // create token jwt
     const payload = {
+      users_id,
       users_fullname,
       users_email,
       roles_id,
@@ -87,6 +88,7 @@ const login = async (req, res) => {
         data: {
           token,
           userInfo: {
+            users_id,
             users_fullname,
             users_email,
             roles_id,
@@ -98,6 +100,7 @@ const login = async (req, res) => {
     res.status(500).json({
       msg: "Internal Server Error",
     });
+    console.log(error);
   }
 };
 

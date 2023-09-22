@@ -1,6 +1,6 @@
 const express = require("express");
 const productsRouter = express.Router();
-const { isLogin, isAdmin } = require("../Middlewares/authorization");
+const { isLogin, authUsers } = require("../Middlewares/authorization");
 
 const {
   getAllProducts,
@@ -11,9 +11,9 @@ const {
 } = require("../Handlers/products.handler");
 
 productsRouter.get("/", getAllProducts);
-productsRouter.post("/", isLogin, isAdmin, addNewProducts);
-productsRouter.patch("/:id", isLogin, isAdmin, updateProducts);
-productsRouter.delete("/:id", isLogin, isAdmin, deleteProducts);
+productsRouter.post("/", isLogin, authUsers([1]), addNewProducts);
+productsRouter.patch("/:id", isLogin, authUsers([1]), updateProducts);
+productsRouter.delete("/:id", isLogin, authUsers([1]), deleteProducts);
 productsRouter.get("/popular", getPopularProducts);
 
 module.exports = productsRouter;

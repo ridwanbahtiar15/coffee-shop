@@ -4,6 +4,7 @@ const fs = require("fs");
 const {
   getAll,
   getById,
+  getUserProfile,
   insert,
   update,
   softDelete,
@@ -17,6 +18,28 @@ const getAllUsers = async (req, res) => {
       ? (result = await getAll(query.page, query.limit))
       : (result = await getAll());
 
+    if (result.rows.length == 0) {
+      return res.status(404).json({
+        msg: "Users not found!",
+        result: [],
+      });
+    }
+
+    res.status(200).json({
+      msg: "Success",
+      result: result.rows,
+    });
+  } catch (error) {
+    res.status(500).json({
+      msg: "Internal Server Error",
+    });
+  }
+};
+
+const getUsersById = async (req, res) => {
+  try {
+    const { params } = req;
+    const result = await getUserProfile(req.userInfo.users_id);
     if (result.rows.length == 0) {
       return res.status(404).json({
         msg: "Users not found!",
@@ -159,6 +182,7 @@ const deleteUsers = async (req, res) => {
 
 module.exports = {
   getAllUsers,
+  getUsersById,
   addNewUsers,
   updateUsers,
   deleteUsers,

@@ -1,6 +1,6 @@
 const express = require("express");
 const paymentMethodsRouter = express.Router();
-const { isLogin, isAdmin } = require("../Middlewares/authorization");
+const { isLogin, authUsers } = require("../Middlewares/authorization");
 
 const {
   getAllPaymentMethods,
@@ -10,8 +10,18 @@ const {
 } = require("../Handlers/payment-methods.handler");
 
 paymentMethodsRouter.get("/", getAllPaymentMethods);
-paymentMethodsRouter.post("/", isLogin, isAdmin, addNewPaymentMethods);
-paymentMethodsRouter.patch("/:id", isLogin, isAdmin, updatePaymentMethods);
-paymentMethodsRouter.delete("/:id", isLogin, isAdmin, deletePaymentMethods);
+paymentMethodsRouter.post("/", isLogin, authUsers([1]), addNewPaymentMethods);
+paymentMethodsRouter.patch(
+  "/:id",
+  isLogin,
+  authUsers([1]),
+  updatePaymentMethods
+);
+paymentMethodsRouter.delete(
+  "/:id",
+  isLogin,
+  authUsers([1]),
+  deletePaymentMethods
+);
 
 module.exports = paymentMethodsRouter;

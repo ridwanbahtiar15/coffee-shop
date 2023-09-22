@@ -1,6 +1,6 @@
 const express = require("express");
 const categoriesRouter = express.Router();
-const { isLogin, isAdmin } = require("../Middlewares/authorization");
+const { isLogin, authUsers } = require("../Middlewares/authorization");
 
 const {
   getAllCategories,
@@ -9,9 +9,9 @@ const {
   deleteCategories,
 } = require("../Handlers/categories.handler");
 
-categoriesRouter.get("/", isLogin, isAdmin, getAllCategories);
-categoriesRouter.post("/", isLogin, isAdmin, addNewCategories);
-categoriesRouter.patch("/:id", isLogin, isAdmin, updateCategories);
-categoriesRouter.delete("/:id", isLogin, isAdmin, deleteCategories);
+categoriesRouter.get("/", isLogin, authUsers([1, 2]), getAllCategories);
+categoriesRouter.post("/", isLogin, authUsers([1]), addNewCategories);
+categoriesRouter.patch("/:id", isLogin, authUsers([1]), updateCategories);
+categoriesRouter.delete("/:id", isLogin, authUsers([1]), deleteCategories);
 
 module.exports = categoriesRouter;

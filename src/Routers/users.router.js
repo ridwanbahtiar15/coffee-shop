@@ -8,6 +8,7 @@ const {
   getUsersById,
   addNewUsers,
   updateUsers,
+  updateUserProfile,
   deleteUsers,
 } = require("../Handlers/users.handler");
 
@@ -23,9 +24,16 @@ usersRouter.post(
 usersRouter.patch(
   "/:id",
   isLogin,
-  authUsers([1]),
+  authUsers([1, 2]),
   singleUpload("users_image"),
   updateUsers
+);
+usersRouter.patch(
+  "/profile/edit",
+  isLogin,
+  authUsers([1, 2]),
+  singleUpload("users_image"),
+  updateUserProfile
 );
 usersRouter.delete("/:id", isLogin, authUsers([1]), deleteUsers);
 

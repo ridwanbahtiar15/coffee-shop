@@ -38,7 +38,6 @@ const getAllUsers = async (req, res) => {
 
 const getUsersById = async (req, res) => {
   try {
-    const { params } = req;
     const result = await getUserProfile(req.userInfo.users_id);
     if (result.rows.length == 0) {
       return res.status(404).json({
@@ -132,12 +131,16 @@ const updateUsers = async (req, res) => {
 
     // jika gambar diubah
     if (req.file) {
-      // delete image lama
-      const dir = "./public/img/" + dataById.rows[0].users_image;
-      fs.unlink(dir, (err) => {
-        if (err) throw err;
-      });
-      usersImage = req.file.filename;
+      if (dataById.rows[0].users_image == "profile.jpg") {
+        usersImage = req.file.filename;
+      } else {
+        // delete image lama
+        const dir = "./public/img/" + dataById.rows[0].users_image;
+        fs.unlink(dir, (err) => {
+          if (err) throw err;
+        });
+        usersImage = req.file.filename;
+      }
     }
 
     const data = await update(
@@ -166,6 +169,72 @@ const updateUsers = async (req, res) => {
   }
 };
 
+const updateUserProfile = async (req, res) => {
+  try {
+    const { body, userInfo } = req;
+    const dataById = await getById(req.userInfo.users_id);
+
+    let usersFullName = body.users_fullname;
+    let usersEmail = body.users_email;
+    let usersPassword = body.users_password;
+    let usersPhone = body.users_phone;
+    let usersAddress = body.users_address;
+    let usersImage = dataById.rows[0].users_image;
+    let rolesId = body.roles_id;
+
+    if (!usersFullName) usersFullName = dataById.rows[0].users_fullname;
+    if (!usersEmail) usersEmail = dataById.rows[0].users_email;
+    if (!usersPassword) usersPassword = dataById.rows[0].users_password;
+    if (!usersPhone) usersPhone = dataById.rows[0].users_phone;
+    if (!usersAddress) usersAddress = dataById.rows[0].users_address;
+    if (!rolesId) rolesId = dataById.rows[0].roles_id;
+
+    // jika gambar diubah
+    if (req.file) {
+      if (dataById.rows[0].users_image == "profile.jpg") {
+        usersImage = req.file.filename;
+      } else {
+        // delete image lama
+        const dir = "./public/img/" + dataById.rows[0].users_image;
+        fs.unlink(dir, (err) => {
+          if (err) throw err;
+        });
+        usersImage = req.file.filename;
+      }
+    }
+
+    const data = await update(
+      usersFullName,
+      usersEmail,
+      usersPassword,
+      usersPhone,
+      usersAddress,
+      usersImage,
+      rolesId,
+      userInfo.users_id
+    );
+
+    if (data.rowCount == 0) {
+      return res.status(500).json({
+        msg: "Internal Server Error",
+      });
+    }
+    res.status(200).json({
+      msg: "Data has been updated!",
+    });
+  } catch (error) {
+    if (error.code == "23505") {
+      return res.status(500).json({
+        msg: "Email or Phone has been used",
+      });
+    }
+    res.status(500).json({
+      msg: "Internal Server Error",
+    });
+    console.log(error);
+  }
+};
+
 const deleteUsers = async (req, res) => {
   try {
     const { params } = req;
@@ -185,5 +254,6 @@ module.exports = {
   getUsersById,
   addNewUsers,
   updateUsers,
+  updateUserProfile,
   deleteUsers,
 };

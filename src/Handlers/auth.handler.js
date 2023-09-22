@@ -1,22 +1,27 @@
 const argon = require("argon2");
+const fs = require("fs");
 const jwt = require("jsonwebtoken");
 const { jwtKey, issuer } = require("../Configs/environments");
 const { createUser, getUserByEmail } = require("../Models/auth.model");
 
 const register = async (req, res) => {
-  const {
-    body: {
-      users_fullname,
-      users_email,
-      users_password,
-      users_phone,
-      users_address,
-      users_image,
-      roles_id,
-    },
-  } = req;
-
   try {
+    const {
+      body: {
+        users_fullname,
+        users_email,
+        users_password,
+        users_phone,
+        users_address,
+        roles_id,
+      },
+    } = req;
+
+    let usersImage = "profile.jpg";
+    if (req.file) {
+      usersImage = req.file.filename;
+    }
+
     const hash = await argon.hash(users_password);
     // create user
     await createUser(
@@ -25,7 +30,7 @@ const register = async (req, res) => {
       hash,
       users_phone,
       users_address,
-      users_image,
+      usersImage,
       roles_id
     );
 
@@ -33,10 +38,16 @@ const register = async (req, res) => {
       msg: "User success registered!",
     });
   } catch (error) {
-    if (error.code == "23505")
+    if (error.code == "23505") {
+      // delete image saat error constraint
+      const dir = "./public/img/" + req.file.filename;
+      fs.unlink(dir, (err) => {
+        if (err) throw err;
+      });
       return res.status(400).json({
         msg: "Duplicate Email or Phone!",
       });
+    }
     res.status(500).json({
       msg: "Internal Server Error",
     });
@@ -46,7 +57,7 @@ const register = async (req, res) => {
 const login = async (req, res) => {
   const { body } = req;
   try {
-    const result = await getUserByEmail(body.users_email);
+    const result = await getUserByEmail(users_email);
     // check data
     if (!result.rows.length)
       return res.status(404).json({

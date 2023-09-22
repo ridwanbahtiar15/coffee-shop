@@ -44,13 +44,18 @@ const addNewUsers = async (req, res) => {
       !body.users_password ||
       !body.users_phone ||
       !body.users_address ||
-      !req.file.filename ||
       !body.roles_id
     ) {
       return res.status(404).json({
         msg: "Some values not found!",
       });
     }
+
+    let usersImage = "profile.jpg";
+    if (req.file) {
+      usersImage = req.file.filename;
+    }
+
     const hash = await argon.hash(body.users_password);
     await insert(
       body.users_fullname,
@@ -58,7 +63,7 @@ const addNewUsers = async (req, res) => {
       hash,
       body.users_phone,
       body.users_address,
-      req.file.filename,
+      usersImage,
       body.roles_id
     );
 
@@ -66,15 +71,8 @@ const addNewUsers = async (req, res) => {
       msg: "Data has been added!",
     });
   } catch (error) {
-    if (
-      error.message ==
-      "Cannot read properties of undefined (reading 'filename')"
-    )
-      return res.status(400).json({
-        msg: "Image not uploaded!",
-      });
     if (error.code == "23505") {
-      // delete image saat berhasil di upload
+      // delete image saat error constraint
       const dir = "./public/img/" + req.file.filename;
       fs.unlink(dir, (err) => {
         if (err) throw err;
@@ -83,7 +81,6 @@ const addNewUsers = async (req, res) => {
         msg: "Duplicate Email or Phone!",
       });
     }
-    console.log(error);
     res.status(500).json({
       msg: "Internal Server Error",
     });

@@ -48,13 +48,18 @@ const addNewSizes = async (req, res) => {
 const updateSizes = async (req, res) => {
   try {
     const { body, params } = req;
+    if (!body.sizes_name || !body.sizes_cost) {
+      return res.status(404).json({
+        msg: "Some values not found!",
+      });
+    }
     const dataById = await getById(params.id);
 
-    let sizesName = body.sizes_name;
-    let sizesCost = body.sizes_cost;
+    let sizesName = dataById.rows[0].sizes_name;
+    let sizesCost = dataById.rows[0].sizes_cost;
 
-    if (!sizesName) sizesName = dataById.rows[0].sizes_name;
-    if (!sizesCost) sizesCost = dataById.rows[0].sizes_cost;
+    if (body.sizes_name) sizesName = body.sizes_name;
+    if (body.sizes_cost) sizesCost = body.sizes_cost;
 
     const data = await update(sizesName, sizesCost, params.id);
     if (data.rowCount == 0) {

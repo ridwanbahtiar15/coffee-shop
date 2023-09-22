@@ -34,17 +34,28 @@ const getAllOrders = async (req, res) => {
 const addNewOrders = async (req, res) => {
   try {
     const { body } = req;
+    if (
+      !body.users_id ||
+      !body.payment_methods_id ||
+      !body.deliveries_id ||
+      !body.promos_id ||
+      !body.products_id ||
+      !body.sizes_id ||
+      !body.orders_products_qty ||
+      !body.hot_or_ice
+    ) {
+      return res.status(404).json({
+        msg: "Some values not found!",
+      });
+    }
     await insert(
       body.users_id,
       body.payment_methods_id,
       body.deliveries_id,
       body.promos_id,
-      body.orders_status,
-      body.orders_total,
       body.products_id,
       body.sizes_id,
       body.orders_products_qty,
-      body.orders_products_subtotal,
       body.hot_or_ice
     );
     res.status(200).json({
@@ -61,29 +72,15 @@ const addNewOrders = async (req, res) => {
 const updateOrders = async (req, res) => {
   try {
     const { body, params } = req;
+    if (!body.orders_status) {
+      return res.status(404).json({
+        msg: "Some values not found!",
+      });
+    }
     const dataById = await getById(params.id);
-
-    let paymentMethodsId = body.payment_methods_id;
-    let deliveriesId = body.deliveries_id;
-    let promosID = body.promos_id;
-    let ordersStatus = body.orders_status;
-    let ordersTotal = body.orders_total;
-
-    if (!paymentMethodsId)
-      paymentMethodsId = dataById.rows[0].payment_methods_id;
-    if (!deliveriesId) deliveriesId = dataById.rows[0].deliveries_id;
-    if (!promosID) promosID = dataById.rows[0].promos_id;
-    if (!ordersStatus) ordersStatus = dataById.rows[0].orders_status;
-    if (!ordersTotal) ordersTotal = dataById.rows[0].orders_total;
-
-    const data = await update(
-      paymentMethodsId,
-      deliveriesId,
-      promosID,
-      ordersStatus,
-      ordersTotal,
-      params.id
-    );
+    let ordersStatus = dataById.rows[0].orders_status;
+    if (body.orders_status) ordersStatus = body.orders_status;
+    const data = await update(ordersStatus, params.id);
 
     if (data.rowCount == 0) {
       return res.status(500).json({

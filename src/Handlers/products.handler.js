@@ -1,3 +1,5 @@
+const fs = require("fs");
+
 const {
   getAll,
   getById,
@@ -68,11 +70,15 @@ const addNewProducts = async (req, res) => {
       !body.products_price ||
       !body.products_desc ||
       !body.products_stock ||
-      !body.products_image ||
       !body.categories_id
     ) {
       return res.status(404).json({
         msg: "Some values not found!",
+      });
+    }
+    if (!req.file) {
+      return res.status(404).json({
+        msg: "Image not found!",
       });
     }
     await insert(
@@ -80,7 +86,7 @@ const addNewProducts = async (req, res) => {
       body.products_price,
       body.products_desc,
       body.products_stock,
-      body.products_image,
+      req.file.filename,
       body.categories_id
     );
     res.status(200).json({
@@ -96,21 +102,41 @@ const addNewProducts = async (req, res) => {
 const updateProducts = async (req, res) => {
   try {
     const { body, params } = req;
+    if (
+      !body.products_name ||
+      !body.products_price ||
+      !body.products_desc ||
+      !body.products_stock ||
+      !body.categories_id
+    ) {
+      return res.status(404).json({
+        msg: "Some values not found!",
+      });
+    }
     const dataById = await getById(params.id);
 
-    let productsName = body.products_name;
-    let productsPrice = body.products_price;
-    let productsDesc = body.products_desc;
-    let productsStock = body.products_stock;
-    let productsImage = body.products_image;
-    let categoriesID = body.categories_id;
+    let productsName = dataById.rows[0].products_name;
+    let productsPrice = dataById.rows[0].products_price;
+    let productsDesc = dataById.rows[0].products_desc;
+    let productsStock = dataById.rows[0].products_stock;
+    let productsImage = dataById.rows[0].products_image;
+    let categoriesID = dataById.rows[0].categories_id;
 
-    if (!productsName) productsName = dataById.rows[0].products_name;
-    if (!productsPrice) productsPrice = dataById.rows[0].products_price;
-    if (!productsDesc) productsDesc = dataById.rows[0].products_desc;
-    if (!productsStock) productsStock = dataById.rows[0].products_stock;
-    if (!productsImage) productsImage = dataById.rows[0].products_image;
-    if (!categoriesID) categoriesID = dataById.rows[0].categories_id;
+    if (body.products_name) productsName = body.products_name;
+    if (body.products_price) productsPrice = body.products_price;
+    if (body.products_desc) productsDesc = body.products_desc;
+    if (body.products_stock) productsStock = body.products_stock;
+    if (body.categories_id) categoriesID = body.categories_id;
+
+    // jika gambar diubah
+    if (req.file) {
+      // delete image lama
+      const dir = "./public/img/" + dataById.rows[0].products_image;
+      fs.unlink(dir, (err) => {
+        if (err) throw err;
+      });
+      productsImage = req.file.filename;
+    }
 
     const data = await update(
       productsName,

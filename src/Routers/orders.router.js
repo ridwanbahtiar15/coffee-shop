@@ -9,7 +9,7 @@ const {
   deleteOrders,
 } = require("../Handlers/orders.handler");
 
-ordersRouter.get("/", authUsers([1]), getAllOrders);
+ordersRouter.get("/", getAllOrders);
 ordersRouter.post("/", isLogin, authUsers([1]), addNewOrders);
 ordersRouter.patch("/:id", isLogin, authUsers([1]), updateOrders);
 ordersRouter.delete("/:id", isLogin, authUsers([1]), deleteOrders);

@@ -48,9 +48,15 @@ const addNewRoles = async (req, res) => {
 const updateRoles = async (req, res) => {
   try {
     const { body, params } = req;
+    if (!body.roles_name) {
+      return res.status(404).json({
+        msg: "Some values not found!",
+      });
+    }
+
     const dataById = await getById(params.id);
-    let rolesName = body.roles_name;
-    if (!rolesName) rolesName = dataById.rows[0].roles_name;
+    let rolesName = dataById.rows[0].roles_name;
+    if (body.roles_name) rolesName = body.roles_name;
 
     const data = await update(rolesName, params.id);
     if (data.rowCount == 0) {

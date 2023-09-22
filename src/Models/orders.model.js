@@ -26,12 +26,9 @@ const insert = async (
   paymentMethodsId,
   deliveriesId,
   promosID,
-  ordersStatus,
-  ordersTotal,
   productsId,
   sizesId,
   ordersProductsQty,
-  ordersProductsSubtotal,
   hotOrIce
 ) => {
   const client = await db.connect();
@@ -40,26 +37,18 @@ const insert = async (
     await client.query("BEGIN");
     // order
     const sqlOrder =
-      "insert into orders (users_id, payment_methods_id, deliveries_id, promos_id, orders_status, orders_total) values ($1, $2, $3, $4, $5, $6) returning orders_id";
-    const valuesOrder = [
-      userId,
-      paymentMethodsId,
-      deliveriesId,
-      promosID,
-      ordersStatus,
-      ordersTotal,
-    ];
+      "insert into orders (users_id, payment_methods_id, deliveries_id, promos_id) values ($1, $2, $3, $4) returning orders_id";
+    const valuesOrder = [userId, paymentMethodsId, deliveriesId, promosID];
     const order = await client.query(sqlOrder, valuesOrder);
 
     // order products
     const sqlOrderProducts =
-      "insert into orders_products (orders_id, products_id, sizes_id, orders_products_qty, orders_products_subtotal, hot_or_ice) values ($1, $2, $3, $4, $5, $6) returning orders_products_qty, products_id";
+      "insert into orders_products (orders_id, products_id, sizes_id, orders_products_qty, hot_or_ice) values ($1, $2, $3, $4, $5) returning orders_products_qty, products_id";
     const valuesOrderProducts = [
       order.rows[0].orders_id,
       productsId,
       sizesId,
       ordersProductsQty,
-      ordersProductsSubtotal,
       hotOrIce,
     ];
     const orderProducts = await client.query(
@@ -102,24 +91,10 @@ const insert = async (
   }
 };
 
-const update = (
-  paymentMethodsId,
-  deliveriesId,
-  promosId,
-  ordersStatus,
-  ordersTotal,
-  id
-) => {
+const update = (ordersStatus, id) => {
   const sql =
-    "update orders set payment_methods_id = $1, deliveries_id = $2, promos_id = $3, orders_status = $4, orders_total = $5, updated_at = now() where orders_id = $6";
-  const values = [
-    paymentMethodsId,
-    deliveriesId,
-    promosId,
-    ordersStatus,
-    ordersTotal,
-    id,
-  ];
+    "update orders set orders_status = $1, updated_at = now() where orders_id = $2";
+  const values = [ordersStatus, id];
   return db.query(sql, values);
 };
 

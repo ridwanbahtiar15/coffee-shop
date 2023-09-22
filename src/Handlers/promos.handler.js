@@ -48,15 +48,20 @@ const addNewPromos = async (req, res) => {
 const updatePromos = async (req, res) => {
   try {
     const { body, params } = req;
+    if (!body.promos_name || !body.promos_start || !body.promos_end) {
+      return res.status(404).json({
+        msg: "Some values not found!",
+      });
+    }
     const dataById = await getById(params.id);
 
-    let promosName = body.promos_name;
-    let promosStart = body.promos_start;
-    let promosEnd = body.promos_end;
+    let promosName = dataById.rows[0].promos_name;
+    let promosStart = dataById.rows[0].promos_start;
+    let promosEnd = dataById.rows[0].promos_end;
 
-    if (!promosName) promosName = dataById.rows[0].promos_name;
-    if (!promosStart) promosStart = dataById.rows[0].promos_start;
-    if (!promosEnd) promosEnd = dataById.rows[0].promos_end;
+    if (body.promos_name) promosName = body.promos_name;
+    if (body.promos_start) promosStart = body.promos_start;
+    if (body.promos_end) promosEnd = body.promos_end;
 
     const data = await update(promosName, promosStart, promosEnd, params.id);
 

@@ -112,25 +112,40 @@ const addNewUsers = async (req, res) => {
 const updateUsers = async (req, res) => {
   try {
     const { body, params } = req;
+
+    if (
+      !body.users_fullname ||
+      !body.users_email ||
+      !body.users_password ||
+      !body.users_phone ||
+      !body.users_address ||
+      !body.roles_id
+    ) {
+      return res.status(404).json({
+        msg: "Some values not found!",
+      });
+    }
+
     const dataById = await getById(params.id);
 
-    let usersFullName = body.users_fullname;
-    let usersEmail = body.users_email;
-    let usersPassword = body.users_password;
-    let usersPhone = body.users_phone;
-    let usersAddress = body.users_address;
+    let usersFullName = dataById.rows[0].users_fullname;
+    let usersEmail = dataById.rows[0].users_email;
+    let usersPassword = dataById.rows[0].users_password;
+    let usersPhone = dataById.rows[0].users_phone;
+    let usersAddress = dataById.rows[0].users_address;
     let usersImage = dataById.rows[0].users_image;
-    let rolesId = body.roles_id;
+    let rolesId = dataById.rows[0].roles_id;
 
-    if (!usersFullName) usersFullName = dataById.rows[0].users_fullname;
-    if (!usersEmail) usersEmail = dataById.rows[0].users_email;
-    if (!usersPassword) usersPassword = dataById.rows[0].users_password;
-    if (!usersPhone) usersPhone = dataById.rows[0].users_phone;
-    if (!usersAddress) usersAddress = dataById.rows[0].users_address;
-    if (!rolesId) rolesId = dataById.rows[0].roles_id;
+    if (body.users_fullname) usersFullName = body.users_fullname;
+    if (body.users_email) usersEmail = body.users_email;
+    if (body.users_password)
+      usersPassword = await argon.hash(body.users_password);
+    if (body.users_phone) usersPhone = body.users_phone;
+    if (body.users_address) usersAddress = body.users_address;
+    if (body.roles_id) rolesId = body.roles_id;
 
-    // jika gambar diubah
     if (req.file) {
+      // jika gambar diubah
       if (dataById.rows[0].users_image == "profile.jpg") {
         usersImage = req.file.filename;
       } else {
@@ -166,6 +181,7 @@ const updateUsers = async (req, res) => {
     res.status(500).json({
       msg: "Internal Server Error",
     });
+    console.log(error);
   }
 };
 

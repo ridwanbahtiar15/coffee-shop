@@ -1,3 +1,4 @@
+const argon = require("argon2");
 const fs = require("fs");
 
 const {
@@ -50,10 +51,11 @@ const addNewUsers = async (req, res) => {
         msg: "Some values not found!",
       });
     }
+    const hash = await argon.hash(body.users_password);
     await insert(
       body.users_fullname,
       body.users_email,
-      body.users_password,
+      hash,
       body.users_phone,
       body.users_address,
       req.file.filename,
@@ -78,7 +80,7 @@ const addNewUsers = async (req, res) => {
         if (err) throw err;
       });
       return res.status(400).json({
-        msg: "Some values unique!",
+        msg: "Duplicate Email or Phone!",
       });
     }
     console.log(error);
@@ -98,7 +100,7 @@ const updateUsers = async (req, res) => {
     let usersPassword = body.users_password;
     let usersPhone = body.users_phone;
     let usersAddress = body.users_address;
-    let usersImage = body.users_image;
+    let usersImage = dataById.rows[0].users_image;
     let rolesId = body.roles_id;
 
     if (!usersFullName) usersFullName = dataById.rows[0].users_fullname;
@@ -106,8 +108,17 @@ const updateUsers = async (req, res) => {
     if (!usersPassword) usersPassword = dataById.rows[0].users_password;
     if (!usersPhone) usersPhone = dataById.rows[0].users_phone;
     if (!usersAddress) usersAddress = dataById.rows[0].users_address;
-    if (!usersImage) usersImage = dataById.rows[0].users_image;
     if (!rolesId) rolesId = dataById.rows[0].roles_id;
+
+    // jika gambar diubah
+    if (req.file) {
+      // delete image lama
+      const dir = "./public/img/" + dataById.rows[0].users_image;
+      fs.unlink(dir, (err) => {
+        if (err) throw err;
+      });
+      usersImage = req.file.filename;
+    }
 
     const data = await update(
       usersFullName,
@@ -119,6 +130,7 @@ const updateUsers = async (req, res) => {
       rolesId,
       params.id
     );
+
     if (data.rowCount == 0) {
       return res.status(500).json({
         msg: "Internal Server Error",
@@ -145,7 +157,6 @@ const deleteUsers = async (req, res) => {
     res.status(500).json({
       msg: "Internal Server Error",
     });
-    console.log(error);
   }
 };
 

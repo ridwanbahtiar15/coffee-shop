@@ -34,7 +34,7 @@ const register = async (req, res) => {
     });
   } catch (error) {
     if (error.code == "23505")
-      return res.status(500).json({
+      return res.status(400).json({
         msg: "Duplicate Email or Phone!",
       });
     res.status(500).json({

@@ -12,7 +12,7 @@ const {
 
 usersRouter.get("/", getAllUsers);
 usersRouter.post("/", singleUpload("users_image"), addNewUsers);
-usersRouter.patch("/:id", isLogin, isAdmin, updateUsers);
+usersRouter.patch("/:id", singleUpload("users_image"), updateUsers);
 usersRouter.delete("/:id", isLogin, isAdmin, deleteUsers);
 
 module.exports = usersRouter;

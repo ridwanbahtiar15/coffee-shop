@@ -1,3 +1,5 @@
+const fs = require("fs");
+
 const {
   getAll,
   getById,
@@ -41,7 +43,7 @@ const addNewUsers = async (req, res) => {
       !body.users_password ||
       !body.users_phone ||
       !body.users_address ||
-      !body.users_image ||
+      !req.file.filename ||
       !body.roles_id
     ) {
       return res.status(404).json({
@@ -54,13 +56,32 @@ const addNewUsers = async (req, res) => {
       body.users_password,
       body.users_phone,
       body.users_address,
-      body.users_image,
+      req.file.filename,
       body.roles_id
     );
+
     res.status(200).json({
       msg: "Data has been added!",
     });
   } catch (error) {
+    if (
+      error.message ==
+      "Cannot read properties of undefined (reading 'filename')"
+    )
+      return res.status(400).json({
+        msg: "Image not uploaded!",
+      });
+    if (error.code == "23505") {
+      // delete image saat berhasil di upload
+      const dir = "./public/img/" + req.file.filename;
+      fs.unlink(dir, (err) => {
+        if (err) throw err;
+      });
+      return res.status(400).json({
+        msg: "Some values unique!",
+      });
+    }
+    console.log(error);
     res.status(500).json({
       msg: "Internal Server Error",
     });
@@ -110,7 +131,6 @@ const updateUsers = async (req, res) => {
     res.status(500).json({
       msg: "Internal Server Error",
     });
-    console.log(error);
   }
 };
 

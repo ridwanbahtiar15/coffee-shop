@@ -1,6 +1,7 @@
 const express = require("express");
 const usersRouter = express.Router();
 const { isLogin, isAdmin } = require("../Middlewares/authorization");
+const { singleUpload } = require("../Middlewares/diskUpload");
 
 const {
   getAllUsers,
@@ -9,8 +10,8 @@ const {
   deleteUsers,
 } = require("../Handlers/users.handler");
 
-usersRouter.get("/", isLogin, isAdmin, getAllUsers);
-usersRouter.post("/", isLogin, isAdmin, addNewUsers);
+usersRouter.get("/", getAllUsers);
+usersRouter.post("/", singleUpload("users_image"), addNewUsers);
 usersRouter.patch("/:id", isLogin, isAdmin, updateUsers);
 usersRouter.delete("/:id", isLogin, isAdmin, deleteUsers);
 

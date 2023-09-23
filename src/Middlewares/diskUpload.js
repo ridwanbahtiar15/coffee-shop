@@ -18,15 +18,14 @@ const diskUpload = multer({
   fileFilter: (req, file, cb) => {
     // validasi
     if (
-      file.mimetype == "image/png" ||
-      file.mimetype == "image/jpg" ||
-      file.mimetype == "image/jpeg"
+      file.mimetype != "image/png" &&
+      file.mimetype != "image/jpg" &&
+      file.mimetype != "image/jpeg"
     ) {
-      cb(null, true);
-    } else {
-      // cb(new Error("Invalid mime type!"));
-      cb(null, false);
+      req.fileValidationError = "Forbidden extension!";
+      return cb(null, false, req.fileValidationError);
     }
+    cb(null, true);
   },
 });
 

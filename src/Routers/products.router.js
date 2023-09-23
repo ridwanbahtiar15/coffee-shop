@@ -12,20 +12,8 @@ const {
 } = require("../Handlers/products.handler");
 
 productsRouter.get("/", getAllProducts);
-productsRouter.post(
-  "/",
-  isLogin,
-  authUsers([1]),
-  singleUpload("products_image"),
-  addNewProducts
-);
-productsRouter.patch(
-  "/:id",
-  isLogin,
-  authUsers([1]),
-  singleUpload("products_image"),
-  updateProducts
-);
+productsRouter.post("/", isLogin, authUsers([1]), addNewProducts);
+productsRouter.patch("/:id", isLogin, authUsers([1]), updateProducts);
 productsRouter.delete("/:id", isLogin, authUsers([1]), deleteProducts);
 productsRouter.get("/popular", getPopularProducts);
 

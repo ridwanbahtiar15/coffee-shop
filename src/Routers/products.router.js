@@ -1,7 +1,6 @@
 const express = require("express");
 const productsRouter = express.Router();
 const { isLogin, authUsers } = require("../Middlewares/authorization");
-const { singleUpload } = require("../Middlewares/diskUpload");
 
 const {
   getAllProducts,

@@ -2,7 +2,7 @@ const db = require("../Configs/postgre.js");
 
 const getAll = () => {
   const sql =
-    "select p.products_id, p.products_name, p.products_price, products_desc, p.products_stock, p.products_image, c.categories_name from products p join categories c on p.categories_id = c.categories_id order by p.products_id asc";
+    "select p.products_id, p.products_name, p.products_price, products_desc, p.products_stock, p.products_image, c.categories_name from products p join categories c on p.categories_id = c.categories_id order by p.created_at asc";
   return db.query(sql);
 };
 
@@ -146,6 +146,26 @@ const filtersProducts = (
   }
 };
 
+const count = (prodcutsName, category) => {
+  let sql = `select count(*) from products p`;
+  const values = [];
+  if (prodcutsName && category) {
+    sql += ` join categories c on p.categories_id = c.categories_id where p.products_name like $1 and c.categories_name = $2`;
+    values.push(`%${prodcutsName}%`, category);
+    return db.query(sql, values);
+  }
+  if (prodcutsName) {
+    sql += ` where p.products_name like $1`;
+    values.push(`%${prodcutsName}%`);
+    return db.query(sql, values);
+  }
+  if (category) {
+    sql += ` join categories c on p.categories_id = c.categories_id where c.categories_name = $1`;
+    values.push(category);
+    return db.query(sql, values);
+  }
+};
+
 module.exports = {
   getAll,
   getById,
@@ -154,4 +174,5 @@ module.exports = {
   del,
   getPopular,
   filtersProducts,
+  count,
 };

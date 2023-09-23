@@ -8,7 +8,61 @@ const {
   del,
   getPopular,
   filtersProducts,
+  count,
 } = require("../Models/products.model");
+
+// const getAllProducts = async (req, res) => {
+//   try {
+//     const { query } = req;
+//     let result;
+
+//     if (
+//       query.name ||
+//       query.category ||
+//       query.minrange ||
+//       query.maxrange ||
+//       query.page ||
+//       query.limit
+//     ) {
+//       result = await filtersProducts(
+//         query.name,
+//         query.category,
+//         query.minrange,
+//         query.maxrange,
+//         query.page,
+//         query.limit
+//       );
+//       if (result.rows.length == 0) {
+//         return res.status(404).json({
+//           msg: "Products not found!",
+//           result: [],
+//         });
+//       }
+
+//       return res.status(200).json({
+//         msg: "Success",
+//         result: result.rows[0],
+//       });
+//     }
+
+//     result = await getAll();
+
+//     if (result.rows.length == 0) {
+//       return res.status(404).json({
+//         msg: "Products not found!",
+//         result: [],
+//       });
+//     }
+//     res.status(200).json({
+//       msg: "Success",
+//       result: result.rows,
+//     });
+//   } catch (error) {
+//     res.status(500).json({
+//       msg: "Internal Server Error",
+//     });
+//   }
+// };
 
 const getAllProducts = async (req, res) => {
   try {
@@ -37,20 +91,35 @@ const getAllProducts = async (req, res) => {
           result: [],
         });
       }
+
+      const metaResult = await count(query.name, query.category);
+
+      const totalData = metaResult.rows[0].count;
+      const isLastPage = Math.ceil(
+        totalData / parseInt(query.limit) <= parseInt(query.page)
+      );
+
       return res.status(200).json({
         msg: "Success",
         result: result.rows,
+        meta: {
+          page: query.page,
+          totalData,
+          next: isLastPage ? null : "next page",
+          prev: query.page == "1" ? null : "prev page",
+        },
       });
     }
 
     result = await getAll();
 
-    if (result.rows.length == 0) {
-      return res.status(404).json({
-        msg: "Products not found!",
-        result: [],
-      });
-    }
+    // if (result.rows.length == 0) {
+    //   return res.status(404).json({
+    //     msg: "Products not found!",
+    //     result: [],
+    //   });
+    // }
+
     res.status(200).json({
       msg: "Success",
       result: result.rows,
@@ -59,6 +128,7 @@ const getAllProducts = async (req, res) => {
     res.status(500).json({
       msg: "Internal Server Error",
     });
+    console.log(error);
   }
 };
 

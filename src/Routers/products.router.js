@@ -11,7 +11,7 @@ const {
   getPopularProducts,
 } = require("../Handlers/products.handler");
 
-productsRouter.get("/", isLogin, authUsers([1, 2]), getAllProducts);
+productsRouter.get("/", getAllProducts);
 productsRouter.post(
   "/",
   isLogin,

@@ -14,7 +14,7 @@ const getById = (id) => {
 };
 
 const insert = (
-  prodcutsName,
+  productsName,
   prodcutsPrice,
   prodcutsDesc,
   prodcutsStock,
@@ -24,7 +24,7 @@ const insert = (
   const sql =
     "insert into products (products_name, products_price, products_desc,products_stock, products_image, categories_id) values ($1, $2, $3, $4, $5, $6)";
   const values = [
-    prodcutsName,
+    productsName,
     prodcutsPrice,
     prodcutsDesc,
     prodcutsStock,
@@ -35,7 +35,7 @@ const insert = (
 };
 
 const update = (
-  prodcutsName,
+  productsName,
   prodcutsPrice,
   prodcutsDesc,
   prodcutsStock,
@@ -46,7 +46,7 @@ const update = (
   const sql =
     "update products set products_name = $1, products_price = $2, products_desc = $3, products_stock = $4, products_image = $5, categories_id = $6, updated_at = now()  where products_id = $7";
   const values = [
-    prodcutsName,
+    productsName,
     prodcutsPrice,
     prodcutsDesc,
     prodcutsStock,
@@ -146,22 +146,29 @@ const filtersProducts = (
   }
 };
 
-const count = (prodcutsName, category) => {
+const count = (productsName, category, minRange = 10000, maxRange = 100000) => {
   let sql = `select count(*) from products p`;
   const values = [];
-  if (prodcutsName && category) {
-    sql += ` join categories c on p.categories_id = c.categories_id where p.products_name like $1 and c.categories_name = $2`;
-    values.push(`%${prodcutsName}%`, category);
+  if (productsName && category && minRange && maxRange) {
+    sql += ` join categories c on p.categories_id = c.categories_id where p.products_name like $1 and c.categories_name = $2 and p.products_price >= $3 and p.products_price <= $4`;
+    values.push(`%${productsName}%`, category, minRange, maxRange);
     return db.query(sql, values);
   }
-  if (prodcutsName) {
-    sql += ` where p.products_name like $1`;
-    values.push(`%${prodcutsName}%`);
+  if (productsName) {
+    sql += ` where p.products_name like $1 and p.products_price >= $2 and p.products_price <= $3`;
+    values.push(`%${productsName}%`, minRange, maxRange);
     return db.query(sql, values);
   }
   if (category) {
-    sql += ` join categories c on p.categories_id = c.categories_id where c.categories_name = $1`;
-    values.push(category);
+    sql += ` join categories c on p.categories_id = c.categories_id where c.categories_name = $1 and p.products_price >= $2 and p.products_price <= $3`;
+    values.push(category, minRange, maxRange);
+    return db.query(sql, values);
+  }
+
+  // jika tidak ada productsname & category
+  if (!productsName && !category) {
+    sql += ` where p.products_price >= $1 and p.products_price <= $2`;
+    values.push(minRange, maxRange);
     return db.query(sql, values);
   }
 };

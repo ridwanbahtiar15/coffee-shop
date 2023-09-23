@@ -92,7 +92,12 @@ const getAllProducts = async (req, res) => {
         });
       }
 
-      const metaResult = await count(query.name, query.category);
+      const metaResult = await count(
+        query.name,
+        query.category,
+        query.minrange,
+        query.maxrange
+      );
 
       const totalData = metaResult.rows[0].count;
       const isLastPage = Math.ceil(

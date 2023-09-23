@@ -82,66 +82,58 @@ const filtersProducts = (
   page = 1,
   limit = 99
 ) => {
-  // jika tidak ada name dan category
-  if (!productsName && !category) {
-    const offset = page * limit - limit;
-    const sql = `select p.products_id, p.products_name, p.products_price, p.products_desc, p.products_stock, p.products_image, c.categories_name
-    from products p
-    join categories c on p.categories_id = c.categories_id
-    where products_price >= $1 and products_price <= $2
-    order by p.created_at asc
-    limit $3 offset $4`;
-    const values = [minRange, maxRange, limit, offset];
-    return db.query(sql, values);
-  }
+  let sql = `select p.products_id, p.products_name, p.products_price, p.products_desc, p.products_stock, p.products_image, c.categories_name
+  from products p`;
+  const values = [];
 
-  // jika tidak ada category
-  if (!category) {
+  if (productsName && category && minRange && maxRange) {
+    sql += ` join categories c on p.categories_id = c.categories_id
+              where p.products_name like $1
+              and products_price >= $3 and products_price <= $4
+              and c.categories_name = $2
+              order by p.created_at asc
+              limit $5 offset $6`;
     const offset = page * limit - limit;
-    const sql = `select p.products_id, p.products_name, p.products_price, p.products_desc, p.products_stock, p.products_image, c.categories_name
-    from products p
-    join categories c on p.categories_id = c.categories_id
-    where p.products_name like $1
-    and products_price >= $2 and products_price <= $3
-    order by p.created_at asc
-    limit $4 offset $5`;
-    const values = [`%${productsName}%`, minRange, maxRange, limit, offset];
-    return db.query(sql, values);
-  }
-
-  // jika tidak ada name
-  if (!productsName) {
-    const offset = page * limit - limit;
-    const sql = `select p.products_id, p.products_name, p.products_price, p.products_desc, p.products_stock, p.products_image, c.categories_name
-    from products p
-    join categories c on p.categories_id = c.categories_id
-    where c.categories_name = $1
-    and products_price >= $2 and products_price <= $3
-    order by p.created_at asc
-    limit $4 offset $5`;
-    const values = [category, minRange, maxRange, limit, offset];
-    return db.query(sql, values);
-  }
-
-  // jika data lengkap
-  if (productsName && category) {
-    const offset = page * limit - limit;
-    const sql = `select p.products_id, p.products_name, p.products_price, p.products_desc, p.products_stock, p.products_image, c.categories_name
-    from products p
-    join categories c on p.categories_id = c.categories_id
-    where p.products_name like $1
-    and products_price >= $3 and products_price <= $4
-    and c.categories_name = $2
-    order by p.created_at asc
-    limit $5 offset $6`;
-    const values = [
+    values.push(
       `%${productsName}%`,
       category,
       minRange,
       maxRange,
       limit,
-      offset,
-    ];
+      offset
+    );
+    return db.query(sql, values);
+  }
+
+  if (category) {
+    sql += ` join categories c on p.categories_id = c.categories_id
+                where c.categories_name = $1
+                and products_price >= $2 and products_price <= $3
+                order by p.created_at asc
+                limit $4 offset $5`;
+    const offset = page * limit - limit;
+    values.push(category, minRange, maxRange, limit, offset);
+    return db.query(sql, values);
+  }
+
+  if (productsName) {
+    sql += ` join categories c on p.categories_id = c.categories_id
+                where p.products_name like $1
+                and products_price >= $2 and products_price <= $3
+                order by p.created_at asc
+                limit $4 offset $5`;
+    const offset = page * limit - limit;
+    values.push(`%${productsName}%`, minRange, maxRange, limit, offset);
+    return db.query(sql, values);
+  }
+
+  if (!productsName && !category) {
+    sql += ` join categories c on p.categories_id = c.categories_id
+              where products_price >= $1 and products_price <= $2
+              order by p.created_at asc
+              limit $3 offset $4`;
+    const offset = page * limit - limit;
+    values.push(minRange, maxRange, limit, offset);
     return db.query(sql, values);
   }
 };
@@ -154,18 +146,19 @@ const count = (productsName, category, minRange = 10000, maxRange = 100000) => {
     values.push(`%${productsName}%`, category, minRange, maxRange);
     return db.query(sql, values);
   }
+
   if (productsName) {
     sql += ` where p.products_name like $1 and p.products_price >= $2 and p.products_price <= $3`;
     values.push(`%${productsName}%`, minRange, maxRange);
     return db.query(sql, values);
   }
+
   if (category) {
     sql += ` join categories c on p.categories_id = c.categories_id where c.categories_name = $1 and p.products_price >= $2 and p.products_price <= $3`;
     values.push(category, minRange, maxRange);
     return db.query(sql, values);
   }
 
-  // jika tidak ada productsname & category
   if (!productsName && !category) {
     sql += ` where p.products_price >= $1 and p.products_price <= $2`;
     values.push(minRange, maxRange);

@@ -108,7 +108,7 @@ const getAllProducts = async (req, res) => {
 };
 
 const addNewProducts = (req, res) => {
-  singleUpload("products_image")(req, res, async () => {
+  singleUpload("products_image")(req, res, async (err) => {
     try {
       const { body, file } = req;
       if (
@@ -120,6 +120,12 @@ const addNewProducts = (req, res) => {
       ) {
         return res.status(404).json({
           msg: "Some values not found!",
+        });
+      }
+
+      if (err) {
+        return res.status(401).json({
+          msg: err.message,
         });
       }
 
@@ -155,7 +161,7 @@ const addNewProducts = (req, res) => {
 };
 
 const updateProducts = (req, res) => {
-  singleUpload("products_image")(req, res, async () => {
+  singleUpload("products_image")(req, res, async (err) => {
     try {
       const { body, params, file } = req;
       if (
@@ -167,6 +173,12 @@ const updateProducts = (req, res) => {
       ) {
         return res.status(404).json({
           msg: "Some values not found!",
+        });
+      }
+
+      if (err) {
+        return res.status(401).json({
+          msg: err.message,
         });
       }
 

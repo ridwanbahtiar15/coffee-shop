@@ -16,7 +16,6 @@ const getAllProducts = async (req, res) => {
   try {
     const { query } = req;
     let result;
-
     if (
       query.name ||
       query.category ||
@@ -58,14 +57,32 @@ const getAllProducts = async (req, res) => {
         totalData / parseInt(query.limit) <= parseInt(query.page)
       );
 
+      let linkNext = `${req.baseUrl}?page=${
+        parseInt(query.page) + 1
+      }&limit=${parseInt(query.limit)}`;
+
+      if (query.name) linkNext += `&name=${query.name}`;
+      if (query.category) linkNext += `&category=${query.category}`;
+      if (query.minrange && query.maxrange)
+        linkNext += `&minrange=${query.minrange}&maxrange=${query.maxrange}`;
+
+      let linkPrev = `${req.baseUrl}?page=${
+        parseInt(query.page) - 1
+      }&limit=${parseInt(query.limit)}`;
+
+      if (query.name) linkPrev += `&name=${query.name}`;
+      if (query.category) linkPrev += `&category=${query.category}`;
+      if (query.minrange && query.maxrange)
+        linkPrev += `&minrange=${query.minrange}&maxrange=${query.maxrange}`;
+
       return res.status(200).json({
         msg: "Success",
         result: result.rows,
         meta: {
           page: query.page,
           totalData,
-          next: isLastPage ? null : "next page",
-          prev: query.page == "1" ? null : "prev page",
+          next: isLastPage ? null : linkNext,
+          prev: query.page == "1" ? null : linkPrev,
         },
       });
     }
@@ -141,7 +158,6 @@ const updateProducts = (req, res) => {
   singleUpload("products_image")(req, res, async () => {
     try {
       const { body, params, file } = req;
-
       if (
         !body.products_name ||
         !body.products_price ||

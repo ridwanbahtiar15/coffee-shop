@@ -44,7 +44,7 @@ Create file `.env` then edit it with your settings. You will need:
 - DB_PASS = "Your PostgreSQL Password"
 
 - JWT_KEY = "SECRET"
-- ISSUER = "Your Issuer, can be free"
+- ISSUER = "Your Issuer, Up to you"
 
 ## Running the project
 

@@ -22,7 +22,7 @@ const diskUpload = multer({
       file.mimetype != "image/jpg" &&
       file.mimetype != "image/jpeg"
     ) {
-      req.fileValidationError = "Forbidden extension!";
+      req.fileValidationError = "Forbidden extension";
       return cb(null, false, req.fileValidationError);
     }
     cb(null, true);

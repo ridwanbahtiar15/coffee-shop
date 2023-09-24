@@ -245,6 +245,13 @@ const deleteProducts = async (req, res) => {
   try {
     const { params } = req;
     const data = await del(params.id);
+
+    // delete image
+    const dir = "./public/img/" + data.rows[0].products_image;
+    fs.unlink(dir, (err) => {
+      if (err) throw err;
+    });
+
     res.status(200).json({
       msg: `Products ${data.rows[0].products_name}, id = ${params.id} has been deleted!`,
     });

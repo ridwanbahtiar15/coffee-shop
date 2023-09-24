@@ -59,7 +59,7 @@ const update = (
 
 const del = (id) => {
   const sql =
-    "delete from products where products_id = $1 returning products_name";
+    "delete from products where products_id = $1 returning products_name, products_image";
   const values = [id];
   return db.query(sql, values);
 };

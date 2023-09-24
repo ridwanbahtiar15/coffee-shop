@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mail Activation</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      .main {
+        /* width: 400px; */
+        height: 100vh;
+        background-color: salmon;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+      .box {
+        border: 2px solid;
+        border-radius: 10px;
+        padding: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- data username dan uri untuk aktivasi -->
+    <div class="main">
+      <div class="box">
+        <h1>WELCOME, {{ username }}</h1>
+        <p>Thank you for joining our application</p>
+        <p>For activation, Please click button on bellow</p>
+        <a href="{{ activationLink }}"><button>ACTIVATION EMAIL</button></a>
+      </div>
+    </div>
+  </body>
+</html>

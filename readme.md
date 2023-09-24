@@ -1,4 +1,4 @@
-# Coffe Shop
+# Coffee Shop
 
 A project coffe shop, build with using Node Js, Express Js and PostgreSQL
 

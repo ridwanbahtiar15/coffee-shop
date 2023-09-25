@@ -30,32 +30,39 @@ const getUserByEmail = (usersEmail) => {
 };
 
 const insertToken = (usersId, token) => {
-  const sql = `insert into users_activation (users_id, token) values ($1, $2)`;
+  const sql = "insert into users_activation (users_id, token) values ($1, $2)";
   const values = [usersId, token];
   return db.query(sql, values);
 };
 
 const checkUserEmail = (usersEmail) => {
-  const sql = `select users_email from users where users_email = $1`;
+  const sql = "select users_email from users where users_email = $1";
   const values = [usersEmail];
   return db.query(sql, values);
 };
 
 const checkUserToken = (usersToken) => {
-  const sql = `select token from users_activation where token = $1`;
+  const sql = "select token from users_activation where token = $1";
   const values = [usersToken];
   return db.query(sql, values);
 };
 
 const updateUserActive = (usersEmail) => {
-  const sql = `update users set is_active = 1 where users_email = $1`;
+  const sql = "update users set is_active = 1 where users_email = $1";
   const values = [usersEmail];
   return db.query(sql, values);
 };
 
 const delUserToken = (usersToken) => {
-  const sql = `delete from users_activation where token = $1`;
+  const sql = "delete from users_activation where token = $1";
   const values = [usersToken];
+  return db.query(sql, values);
+};
+
+const checkUserActive = (usersEmail) => {
+  const sql =
+    "select users_email from users where users_email = $1 and is_active = $2";
+  const values = [usersEmail, 1];
   return db.query(sql, values);
 };
 
@@ -67,4 +74,5 @@ module.exports = {
   checkUserToken,
   updateUserActive,
   delUserToken,
+  checkUserActive,
 };

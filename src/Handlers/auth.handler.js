@@ -2,6 +2,7 @@ const argon = require("argon2");
 const fs = require("fs");
 const jwt = require("jsonwebtoken");
 const { jwtKey, issuer } = require("../Configs/environments");
+const { sendMail } = require("../Helpers/sendMail.js");
 const {
   createUser,
   getUserByEmail,
@@ -10,8 +11,8 @@ const {
   checkUserToken,
   updateUserActive,
   delUserToken,
+  checkUserActive,
 } = require("../Models/auth.model");
-const { sendMail } = require("../Helpers/sendMail.js");
 
 const register = async (req, res) => {
   try {
@@ -61,11 +62,14 @@ const register = async (req, res) => {
     });
   } catch (error) {
     if (error.code == "23505") {
-      // delete image saat error constraint
-      const dir = "./public/img/" + req.file.filename;
-      fs.unlink(dir, (err) => {
-        if (err) throw err;
-      });
+      if (req.file) {
+        // delete image saat error constraint
+        const dir = "./public/img/" + req.file.filename;
+        fs.unlink(dir, (err) => {
+          if (err) throw err;
+        });
+      }
+
       return res.status(400).json({
         msg: "Duplicate Email or Phone!",
       });
@@ -96,6 +100,13 @@ const login = async (req, res) => {
         msg: "Email or Password wrong!",
       });
 
+    // check password
+    const checkActive = await checkUserActive(users_email);
+    if (!checkActive.rows.length)
+      return res.status(401).json({
+        msg: "User not Active, Please Activated!",
+      });
+
     // create token jwt
     const payload = {
       users_id,
@@ -122,6 +133,7 @@ const login = async (req, res) => {
     res.status(500).json({
       msg: "Internal Server Error",
     });
+    console.log(error);
   }
 };
 
@@ -155,7 +167,6 @@ const activation = async (req, res) => {
     res.status(500).json({
       msg: "Internal Server Error",
     });
-    console.log(error);
   }
 };
 

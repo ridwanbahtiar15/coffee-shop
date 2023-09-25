@@ -1,6 +1,7 @@
 const argon = require("argon2");
 const fs = require("fs");
 const { singleUpload } = require("../Middlewares/diskUpload");
+const { sendMail } = require("../Helpers/sendMail.js");
 
 const {
   getAll,
@@ -10,6 +11,8 @@ const {
   update,
   softDelete,
 } = require("../Models/users.model");
+
+const { insertToken } = require("../Models/auth.model");
 
 const getAllUsers = async (req, res) => {
   try {
@@ -93,7 +96,7 @@ const addNewUsers = (req, res) => {
       }
 
       const hash = await argon.hash(body.users_password);
-      await insert(
+      const user = await insert(
         body.users_fullname,
         body.users_email,
         hash,
@@ -103,16 +106,31 @@ const addNewUsers = (req, res) => {
         body.roles_id
       );
 
+      const tokenActivation = Math.random().toString(36).substr(2);
+      await insertToken(user.rows[0].users_id, tokenActivation);
+
+      const info = await sendMail({
+        to: body.users_email,
+        subject: "Email Activation",
+        data: {
+          email: body.users_email,
+          tokenActivation: tokenActivation,
+        },
+      });
+
       res.status(200).json({
         msg: "Data has been added!",
+        response: info.response,
       });
     } catch (error) {
       if (error.code == "23505") {
-        // delete image saat error constraint
-        const dir = "./public/img/" + req.file.filename;
-        fs.unlink(dir, (err) => {
-          if (err) throw err;
-        });
+        if (req.file) {
+          // delete image saat error constraint
+          const dir = "./public/img/" + req.file.filenames;
+          fs.unlink(dir, (err) => {
+            if (err) throw err;
+          });
+        }
         return res.status(400).json({
           msg: "Duplicate Email or Phone!",
         });
@@ -204,11 +222,14 @@ const updateUsers = (req, res) => {
       });
     } catch (error) {
       if (error.code == "23505") {
-        // delete image saat error constraint
-        const dir = "./public/img/" + req.file.filename;
-        fs.unlink(dir, (err) => {
-          if (err) throw err;
-        });
+        if (req.file) {
+          // delete image saat error constraint
+          const dir = "./public/img/" + req.file.filename;
+          fs.unlink(dir, (err) => {
+            if (err) throw err;
+          });
+        }
+
         return res.status(400).json({
           msg: "Duplicate Email or Phone!",
         });

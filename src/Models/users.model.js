@@ -36,7 +36,7 @@ const insert = (
   usersImage,
   rolesId
 ) => {
-  const sql = `insert into users (users_fullname, users_email, users_password, users_phone, users_address, users_image, roles_id) values ($1, $2, $3, $4, $5, $6, $7)`;
+  const sql = `insert into users (users_fullname, users_email, users_password, users_phone, users_address, users_image, roles_id) values ($1, $2, $3, $4, $5, $6, $7) returning users_id`;
   const values = [
     usersFullName,
     usersEmail,

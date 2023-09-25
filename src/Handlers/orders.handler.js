@@ -34,20 +34,20 @@ const getAllOrders = async (req, res) => {
 const addNewOrders = async (req, res) => {
   try {
     const { body } = req;
-    if (
-      !body.users_id ||
-      !body.payment_methods_id ||
-      !body.deliveries_id ||
-      !body.promos_id ||
-      !body.products_id ||
-      !body.sizes_id ||
-      !body.orders_products_qty ||
-      !body.hot_or_ice
-    ) {
-      return res.status(404).json({
-        msg: "Some values not found!",
-      });
-    }
+    // if (
+    //   !body.users_id ||
+    //   !body.payment_methods_id ||
+    //   !body.deliveries_id ||
+    //   !body.promos_id ||
+    //   !body.products_id ||
+    //   !body.sizes_id ||
+    //   !body.orders_products_qty ||
+    //   !body.hot_or_ice
+    // ) {
+    //   return res.status(404).json({
+    //     msg: "Some values not found!",
+    //   });
+    // }
     await insert(
       body.users_id,
       body.payment_methods_id,

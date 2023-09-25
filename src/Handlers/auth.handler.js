@@ -5,6 +5,8 @@ const { jwtKey, issuer } = require("../Configs/environments");
 const { singleUpload } = require("../Middlewares/diskUpload");
 const { sendMail } = require("../Helpers/sendMail.js");
 
+const db = require("../Configs/postgre.js");
+
 const {
   createUser,
   getUserByEmail,
@@ -129,11 +131,11 @@ const login = async (req, res) => {
         msg: "Email or Password wrong!",
       });
 
-    // check password
+    // check user active
     const checkActive = await checkUserActive(users_email);
     if (!checkActive.rows.length)
       return res.status(401).json({
-        msg: "User not Active, Please Activated!",
+        msg: "User not Active, Please Activation!",
       });
 
     // create token jwt
@@ -157,12 +159,15 @@ const login = async (req, res) => {
           },
         },
       });
+      const sql =
+        "insert into users_tokenjwt (users_id, token_jwt) values ($1, $2)";
+      const values = [users_id, token];
+      db.query(sql, values);
     });
   } catch (error) {
     res.status(500).json({
       msg: "Internal Server Error",
     });
-    console.log(error);
   }
 };
 
@@ -199,4 +204,20 @@ const activation = async (req, res) => {
   }
 };
 
-module.exports = { register, login, activation };
+const logout = async (req, res) => {
+  const authHeader = req.header("Authorization");
+  const token = authHeader.split(" ")[1];
+
+  // cek token dari db
+  const sql = "delete from users_tokenjwt where token_jwt = $1";
+  const values = [token];
+  const tokenJwt = await db.query(sql, values);
+
+  if (tokenJwt.rowCount == 1) {
+    return res.status(200).json({
+      msg: "Success Logout!",
+    });
+  }
+};
+
+module.exports = { register, login, activation, logout };

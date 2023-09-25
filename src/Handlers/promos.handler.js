@@ -48,11 +48,11 @@ const addNewPromos = async (req, res) => {
 const updatePromos = async (req, res) => {
   try {
     const { body, params } = req;
-    if (!body.promos_name || !body.promos_start || !body.promos_end) {
-      return res.status(404).json({
-        msg: "Some values not found!",
-      });
-    }
+    // if (!body.promos_name || !body.promos_start || !body.promos_end) {
+    //   return res.status(404).json({
+    //     msg: "Some values not found!",
+    //   });
+    // }
     const dataById = await getById(params.id);
 
     let promosName = dataById.rows[0].promos_name;

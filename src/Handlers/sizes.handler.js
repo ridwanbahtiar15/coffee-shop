@@ -48,11 +48,11 @@ const addNewSizes = async (req, res) => {
 const updateSizes = async (req, res) => {
   try {
     const { body, params } = req;
-    if (!body.sizes_name || !body.sizes_cost) {
-      return res.status(404).json({
-        msg: "Some values not found!",
-      });
-    }
+    // if (!body.sizes_name || !body.sizes_cost) {
+    //   return res.status(404).json({
+    //     msg: "Some values not found!",
+    //   });
+    // }
     const dataById = await getById(params.id);
 
     let sizesName = dataById.rows[0].sizes_name;

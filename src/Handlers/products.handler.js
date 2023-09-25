@@ -164,17 +164,17 @@ const updateProducts = (req, res) => {
   singleUpload("products_image")(req, res, async (err) => {
     try {
       const { body, params, file } = req;
-      if (
-        !body.products_name ||
-        !body.products_price ||
-        !body.products_desc ||
-        !body.products_stock ||
-        !body.categories_id
-      ) {
-        return res.status(404).json({
-          msg: "Some values not found!",
-        });
-      }
+      // if (
+      //   !body.products_name ||
+      //   !body.products_price ||
+      //   !body.products_desc ||
+      //   !body.products_stock ||
+      //   !body.categories_id
+      // ) {
+      //   return res.status(404).json({
+      //     msg: "Some values not found!",
+      //   });
+      // }
 
       if (err) {
         return res.status(401).json({

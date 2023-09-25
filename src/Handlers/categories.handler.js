@@ -48,11 +48,11 @@ const addNewCategories = async (req, res) => {
 const updateCategories = async (req, res) => {
   try {
     const { body, params } = req;
-    if (!body.categories_name) {
-      return res.status(404).json({
-        msg: "Some values not found!",
-      });
-    }
+    // if (!body.categories_name) {
+    //   return res.status(404).json({
+    //     msg: "Some values not found!",
+    //   });
+    // }
     const dataById = await getById(params.id);
     let categoriesName = dataById.rows[0].categories_name;
     if (body.categories_name) categoriesName = body.categories_name;

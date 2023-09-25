@@ -1,7 +1,9 @@
 const jwt = require("jsonwebtoken");
 const { jwtKey, issuer } = require("../Configs/environments");
 
-const isLogin = (req, res, next) => {
+const db = require("../Configs/postgre.js");
+
+const isLogin = async (req, res, next) => {
   const authHeader = req.header("Authorization");
   if (!authHeader) {
     return res.status(401).json({
@@ -10,6 +12,20 @@ const isLogin = (req, res, next) => {
   }
   // jika ada header authorization yg dikirimkan
   const token = authHeader.split(" ")[1];
+
+  // cek token dari db
+  const sql = "select * from users_tokenjwt where token_jwt = $1";
+  const values = [token];
+  const tokenJwt = await db.query(sql, values);
+
+  // console.log(tokenJwt);
+
+  if (!tokenJwt.rows.length) {
+    return res.status(403).json({
+      msg: "Invalid Token, Please login again!",
+    });
+  }
+
   jwt.verify(token, jwtKey, { issuer }, (err, data) => {
     if (err) {
       switch (err.name) {

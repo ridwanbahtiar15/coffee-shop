@@ -48,11 +48,11 @@ const addNewDeliveries = async (req, res) => {
 const updateDeliveries = async (req, res) => {
   try {
     const { body, params } = req;
-    if (!body.deliveries_name || !body.deliveries_cost) {
-      return res.status(404).json({
-        msg: "Some values not found!",
-      });
-    }
+    // if (!body.deliveries_name || !body.deliveries_cost) {
+    //   return res.status(404).json({
+    //     msg: "Some values not found!",
+    //   });
+    // }
     const dataById = await getById(params.id);
     let deliveriesName = dataById.rows[0].deliveries_name;
     let deliveriesCost = dataById.rows[0].deliveries_cost;

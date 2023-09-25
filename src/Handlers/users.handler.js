@@ -245,18 +245,18 @@ const updateUserProfile = async (req, res) => {
   singleUpload("users_image")(req, res, async (err) => {
     try {
       const { body, userInfo, file } = req;
-      if (
-        !body.users_fullname ||
-        !body.users_email ||
-        !body.users_password ||
-        !body.users_phone ||
-        !body.users_address ||
-        !body.roles_id
-      ) {
-        return res.status(404).json({
-          msg: "Some values not found!",
-        });
-      }
+      // if (
+      //   !body.users_fullname ||
+      //   !body.users_email ||
+      //   !body.users_password ||
+      //   !body.users_phone ||
+      //   !body.users_address ||
+      //   !body.roles_id
+      // ) {
+      //   return res.status(404).json({
+      //     msg: "Some values not found!",
+      //   });
+      // }
 
       if (err) {
         return res.status(401).json({

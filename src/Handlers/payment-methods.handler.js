@@ -48,11 +48,11 @@ const addNewPaymentMethods = async (req, res) => {
 const updatePaymentMethods = async (req, res) => {
   try {
     const { body, params } = req;
-    if (!body.payment_methods_name) {
-      return res.status(404).json({
-        msg: "Some values not found!",
-      });
-    }
+    // if (!body.payment_methods_name) {
+    //   return res.status(404).json({
+    //     msg: "Some values not found!",
+    //   });
+    // }
     const dataById = await getById(params.id);
     let paymentMethodsName = dataById.rows[0].payment_methods_name;
     if (body.payment_methods_name)

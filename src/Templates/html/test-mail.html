@@ -32,7 +32,10 @@
         <h1>WELCOME, {{ username }}</h1>
         <p>Thank you for joining our application</p>
         <p>For activation, Please click button on bellow</p>
-        <a href="{{ activationLink }}"><button>ACTIVATION EMAIL</button></a>
+        <a
+          href="http://localhost:3000/auth/activation?email={{ data.email }}&token={{ data.tokenActivation }}"
+          ><button>ACTIVATION EMAIL</button></a
+        >
       </div>
     </div>
   </body>

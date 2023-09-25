@@ -35,7 +35,7 @@ const sendMail = ({ to, subject, data }) => {
     from: '"COFFEE SHOP" <ridwanbahtiar15@gmail.com>',
     to,
     subject,
-    html: mustache.render(template, { data }),
+    html: mustache.render(template, { to, data }),
   };
 
   return transporter.sendMail(mailOptions);

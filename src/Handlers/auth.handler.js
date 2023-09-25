@@ -2,7 +2,16 @@ const argon = require("argon2");
 const fs = require("fs");
 const jwt = require("jsonwebtoken");
 const { jwtKey, issuer } = require("../Configs/environments");
-const { createUser, getUserByEmail } = require("../Models/auth.model");
+const {
+  createUser,
+  getUserByEmail,
+  insertToken,
+  checkUserEmail,
+  checkUserToken,
+  updateUserActive,
+  delUserToken,
+} = require("../Models/auth.model");
+const { sendMail } = require("../Helpers/sendMail.js");
 
 const register = async (req, res) => {
   try {
@@ -24,7 +33,7 @@ const register = async (req, res) => {
 
     const hash = await argon.hash(users_password);
     // create user
-    await createUser(
+    const user = await createUser(
       users_fullname,
       users_email,
       hash,
@@ -34,8 +43,21 @@ const register = async (req, res) => {
       roles_id
     );
 
+    const tokenActivation = Math.random().toString(36).substr(2);
+    await insertToken(user.rows[0].users_id, tokenActivation);
+
+    const info = await sendMail({
+      to: users_email,
+      subject: "Email Activation",
+      data: {
+        email: users_email,
+        tokenActivation: tokenActivation,
+      },
+    });
+
     res.status(201).json({
-      msg: "User success registered!",
+      msg: "User success registered, Please check your email to activate!",
+      response: info.response,
     });
   } catch (error) {
     if (error.code == "23505") {
@@ -103,4 +125,38 @@ const login = async (req, res) => {
   }
 };
 
-module.exports = { register, login };
+const activation = async (req, res) => {
+  try {
+    const { query } = req;
+
+    // cek email ada tidak
+    const checkUser = await checkUserEmail(query.email);
+    if (!checkUser.rows[0])
+      return res.status(400).json({
+        msg: "Users not registered!",
+      });
+
+    // cek token ada tidak
+    const checkToken = await checkUserToken(query.token);
+    if (!checkToken.rows[0])
+      return res.status(400).json({
+        msg: "Token Invalid!",
+      });
+
+    // update isActive = 1
+    // delete field token
+    await updateUserActive(query.email);
+    await delUserToken(query.token);
+
+    res.status(201).json({
+      msg: "User success activated, Please login!",
+    });
+  } catch (error) {
+    res.status(500).json({
+      msg: "Internal Server Error",
+    });
+    console.log(error);
+  }
+};
+
+module.exports = { register, login, activation };

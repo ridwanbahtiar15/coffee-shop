@@ -9,7 +9,7 @@ const {
   deletePaymentMethods,
 } = require("../Handlers/payment-methods.handler");
 
-paymentMethodsRouter.get("/", getAllPaymentMethods);
+paymentMethodsRouter.get("/", isLogin, authUsers([1, 2]), getAllPaymentMethods);
 paymentMethodsRouter.post("/", isLogin, authUsers([1]), addNewPaymentMethods);
 paymentMethodsRouter.patch(
   "/:id",

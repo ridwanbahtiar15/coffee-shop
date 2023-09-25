@@ -10,8 +10,8 @@ const {
   getPopularProducts,
 } = require("../Handlers/products.handler");
 
-productsRouter.get("/", getAllProducts);
-productsRouter.post("/", isLogin, authUsers([1]), addNewProducts);
+productsRouter.get("/", isLogin, authUsers([1, 2]), getAllProducts);
+productsRouter.post("/", isLogin, authUsers([1, 2]), addNewProducts);
 productsRouter.patch("/:id", isLogin, authUsers([1]), updateProducts);
 productsRouter.delete("/:id", isLogin, authUsers([1]), deleteProducts);
 productsRouter.get("/popular", getPopularProducts);

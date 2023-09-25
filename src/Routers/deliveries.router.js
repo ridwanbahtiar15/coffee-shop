@@ -9,7 +9,7 @@ const {
   deleteDeliveries,
 } = require("../Handlers/deliveries.handler");
 
-deliveriesRouter.get("/", getAllDeliveries);
+deliveriesRouter.get("/", isLogin, authUsers([1, 2]), getAllDeliveries);
 deliveriesRouter.post("/", isLogin, authUsers([1]), addNewDeliveries);
 deliveriesRouter.patch("/:id", isLogin, authUsers([1]), updateDeliveries);
 deliveriesRouter.delete("/:id", isLogin, authUsers([1]), deleteDeliveries);

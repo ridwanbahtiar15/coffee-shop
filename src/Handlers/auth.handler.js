@@ -1,8 +1,6 @@
 const argon = require("argon2");
-const fs = require("fs");
 const jwt = require("jsonwebtoken");
 const { jwtKey, issuer } = require("../Configs/environments");
-const { singleUpload } = require("../Middlewares/diskUpload");
 const { sendMail } = require("../Helpers/sendMail.js");
 
 const db = require("../Configs/postgre.js");
@@ -19,96 +17,56 @@ const {
 } = require("../Models/auth.model");
 
 const register = async (req, res) => {
-  singleUpload("users_image")(req, res, async (err) => {
-    try {
-      const {
-        body: {
-          users_fullname,
-          users_email,
-          users_password,
-          users_phone,
-          users_address,
-          roles_id,
-        },
-      } = req;
+  try {
+    const {
+      body: { users_fullname, users_email, users_password },
+    } = req;
 
-      if (
-        !users_fullname ||
-        !users_email ||
-        !users_password ||
-        !users_phone ||
-        !users_address ||
-        !roles_id
-      ) {
-        return res.status(404).json({
-          msg: "Some values not found!",
-        });
-      }
-
-      if (err) {
-        return res.status(401).json({
-          msg: err.message,
-        });
-      }
-
-      if (req.fileValidationError) {
-        return res.status(401).json({
-          msg: req.fileValidationError,
-        });
-      }
-
-      let usersImage = "profile.jpg";
-      if (req.file) {
-        usersImage = req.file.filename;
-      }
-
-      const hash = await argon.hash(users_password);
-      // create user
-      const user = await createUser(
-        users_fullname,
-        users_email,
-        hash,
-        users_phone,
-        users_address,
-        usersImage,
-        roles_id
-      );
-
-      const tokenActivation = Math.random().toString(36).substr(2);
-      await insertToken(user.rows[0].users_id, tokenActivation);
-
-      const info = await sendMail({
-        to: users_email,
-        subject: "Email Activation",
-        data: {
-          email: users_email,
-          tokenActivation: tokenActivation,
-        },
-      });
-
-      res.status(201).json({
-        msg: "User success registered, Please check your email to activate!",
-        response: info.response,
-      });
-    } catch (error) {
-      if (error.code == "23505") {
-        if (req.file) {
-          // delete image saat error constraint
-          const dir = "./public/img/" + req.file.filename;
-          fs.unlink(dir, (err) => {
-            if (err) throw err;
-          });
-        }
-
-        return res.status(400).json({
-          msg: "Duplicate Email or Phone!",
-        });
-      }
-      res.status(500).json({
-        msg: "Internal Server Error",
+    if (!users_fullname || !users_email || !users_password) {
+      return res.status(404).json({
+        msg: "Some values not found!",
       });
     }
-  });
+    const hash = await argon.hash(users_password);
+    const usersImage = "profile.jgp";
+    const roles_id = 2;
+
+    // create user
+    const user = await createUser(
+      users_fullname,
+      users_email,
+      hash,
+      usersImage,
+      roles_id
+    );
+
+    const tokenActivation = Math.random().toString(36).substr(2);
+    await insertToken(user.rows[0].users_id, tokenActivation);
+
+    const info = await sendMail({
+      to: users_email,
+      subject: "Email Activation",
+      data: {
+        email: users_email,
+        tokenActivation: tokenActivation,
+      },
+    });
+
+    res.status(201).json({
+      msg: "User success registered, Please check your email to activate!",
+      response: info.response,
+    });
+  } catch (error) {
+    if (error.code == "23505") {
+      return res.status(400).json({
+        msg: "Duplicate Email or Phone!",
+      });
+    }
+    res.status(500).json({
+      msg: "Internal Server Error",
+    });
+    console.log(error);
+  }
 };
 
 const login = async (req, res) => {

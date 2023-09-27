@@ -11,6 +11,6 @@ const {
 authRouter.get("/activation", activation);
 authRouter.post("/register", register);
 authRouter.post("/login", login);
-authRouter.get("/logout", isLogin, logout);
+authRouter.delete("/logout", isLogin, logout);
 
 module.exports = authRouter;

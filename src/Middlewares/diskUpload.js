@@ -29,4 +29,24 @@ const diskUpload = multer({
   },
 });
 
-module.exports = { singleUpload: (fieldname) => diskUpload.single(fieldname) };
+const upload = (fieldname) => {
+  return (req, res, next) => {
+    diskUpload.single(fieldname)(req, res, (err) => {
+      if (err) {
+        return res.status(401).json({
+          msg: err.message,
+        });
+      }
+
+      if (req.fileValidationError) {
+        return res.status(401).json({
+          msg: req.fileValidationError,
+        });
+      }
+
+      return next();
+    });
+  };
+};
+
+module.exports = { upload };

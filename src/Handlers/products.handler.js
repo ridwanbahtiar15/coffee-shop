@@ -1,5 +1,4 @@
 const fs = require("fs");
-const { singleUpload } = require("../Middlewares/diskUpload");
 
 const {
   getAll,
@@ -107,138 +106,110 @@ const getAllProducts = async (req, res) => {
   }
 };
 
-const addNewProducts = (req, res) => {
-  singleUpload("products_image")(req, res, async (err) => {
-    try {
-      const { body, file } = req;
-      if (
-        !body.products_name ||
-        !body.products_price ||
-        !body.products_desc ||
-        !body.products_stock ||
-        !body.categories_id
-      ) {
-        return res.status(404).json({
-          msg: "Some values not found!",
-        });
-      }
-
-      if (err) {
-        return res.status(401).json({
-          msg: err.message,
-        });
-      }
-
-      if (req.fileValidationError) {
-        return res.status(401).json({
-          msg: req.fileValidationError,
-        });
-      }
-
-      if (!file) {
-        return res.status(404).json({
-          msg: "Image must be uploaded!",
-        });
-      }
-
-      await insert(
-        body.products_name,
-        body.products_price,
-        body.products_desc,
-        body.products_stock,
-        req.file.filename,
-        body.categories_id
-      );
-      res.status(200).json({
-        msg: "Data has been added!",
-      });
-    } catch (error) {
-      res.status(500).json({
-        msg: "Internal Server Error",
+const addNewProducts = async (req, res) => {
+  try {
+    const { body, file } = req;
+    if (
+      !body.products_name ||
+      !body.products_price ||
+      !body.products_desc ||
+      !body.products_stock ||
+      !body.categories_id
+    ) {
+      return res.status(404).json({
+        msg: "Some values not found!",
       });
     }
-  });
+
+    if (!file) {
+      return res.status(404).json({
+        msg: "Image must be uploaded!",
+      });
+    }
+
+    await insert(
+      body.products_name,
+      body.products_price,
+      body.products_desc,
+      body.products_stock,
+      req.file.filename,
+      body.categories_id
+    );
+    res.status(200).json({
+      msg: "Data has been added!",
+    });
+  } catch (error) {
+    res.status(500).json({
+      msg: "Internal Server Error",
+    });
+  }
 };
 
-const updateProducts = (req, res) => {
-  singleUpload("products_image")(req, res, async (err) => {
-    try {
-      const { body, params, file } = req;
-      // if (
-      //   !body.products_name ||
-      //   !body.products_price ||
-      //   !body.products_desc ||
-      //   !body.products_stock ||
-      //   !body.categories_id
-      // ) {
-      //   return res.status(404).json({
-      //     msg: "Some values not found!",
-      //   });
-      // }
+const updateProducts = async (req, res) => {
+  try {
+    const { body, params, file } = req;
+    // if (
+    //   !body.products_name ||
+    //   !body.products_price ||
+    //   !body.products_desc ||
+    //   !body.products_stock ||
+    //   !body.categories_id
+    // ) {
+    //   return res.status(404).json({
+    //     msg: "Some values not found!",
+    //   });
+    // }
 
-      if (err) {
-        return res.status(401).json({
-          msg: err.message,
-        });
-      }
+    const dataById = await getById(params.id);
 
-      if (req.fileValidationError) {
-        return res.status(401).json({
-          msg: req.fileValidationError,
-        });
-      }
+    let productsName = dataById.rows[0].products_name;
+    let productsPrice = dataById.rows[0].products_price;
+    let productsDesc = dataById.rows[0].products_desc;
+    let productsStock = dataById.rows[0].products_stock;
+    let productsImage = dataById.rows[0].products_image;
+    let categoriesID = dataById.rows[0].categories_id;
 
-      const dataById = await getById(params.id);
+    if (body.products_name) productsName = body.products_name;
+    if (body.products_price) productsPrice = body.products_price;
+    if (body.products_desc) productsDesc = body.products_desc;
+    if (body.products_stock) productsStock = body.products_stock;
+    if (body.categories_id) categoriesID = body.categories_id;
 
-      let productsName = dataById.rows[0].products_name;
-      let productsPrice = dataById.rows[0].products_price;
-      let productsDesc = dataById.rows[0].products_desc;
-      let productsStock = dataById.rows[0].products_stock;
-      let productsImage = dataById.rows[0].products_image;
-      let categoriesID = dataById.rows[0].categories_id;
-
-      if (body.products_name) productsName = body.products_name;
-      if (body.products_price) productsPrice = body.products_price;
-      if (body.products_desc) productsDesc = body.products_desc;
-      if (body.products_stock) productsStock = body.products_stock;
-      if (body.categories_id) categoriesID = body.categories_id;
-
-      // jika gambar diubah
-      if (file) {
-        // delete image lama
-        const dir = "./public/img/" + dataById.rows[0].products_image;
-        fs.unlink(dir, (err) => {
-          if (err) throw err;
-        });
-        productsImage = req.file.filename;
-      }
-
-      const data = await update(
-        productsName,
-        productsPrice,
-        productsDesc,
-        productsStock,
-        productsImage,
-        categoriesID,
-        params.id
-      );
-
-      if (data.rowCount == 0) {
-        return res.status(500).json({
-          msg: "Internal Server Error",
-        });
-      }
-
-      res.status(200).json({
-        msg: "Data has been updated!",
+    // jika gambar diubah
+    if (file) {
+      // delete image lama
+      const dir = "./public/img/" + dataById.rows[0].products_image;
+      fs.unlink(dir, (err) => {
+        if (err) throw err;
       });
-    } catch (error) {
-      res.status(500).json({
+      productsImage = req.file.filename;
+    }
+
+    const data = await update(
+      productsName,
+      productsPrice,
+      productsDesc,
+      productsStock,
+      productsImage,
+      categoriesID,
+      params.id
+    );
+
+    if (data.rowCount == 0) {
+      return res.status(500).json({
         msg: "Internal Server Error",
       });
-      console.log(error);
     }
-  });
+
+    res.status(200).json({
+      msg: "Data has been updated!",
+    });
+  } catch (error) {
+    res.status(500).json({
+      msg: "Internal Server Error",
+    });
+    console.log(error);
+  }
 };
 
 const deleteProducts = async (req, res) => {

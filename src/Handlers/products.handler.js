@@ -127,12 +127,14 @@ const addNewProducts = async (req, res) => {
       });
     }
 
+    const products_image = "public/img/" + req.file.filename;
+
     await insert(
       body.products_name,
       body.products_price,
       body.products_desc,
       body.products_stock,
-      req.file.filename,
+      products_image,
       body.categories_id
     );
     res.status(200).json({
@@ -178,11 +180,11 @@ const updateProducts = async (req, res) => {
     // jika gambar diubah
     if (file) {
       // delete image lama
-      const dir = "./public/img/" + dataById.rows[0].products_image;
+      const dir = "./" + dataById.rows[0].products_image;
       fs.unlink(dir, (err) => {
         if (err) throw err;
       });
-      productsImage = req.file.filename;
+      productsImage = "public/img/" + req.file.filename;
     }
 
     const data = await update(
@@ -218,7 +220,7 @@ const deleteProducts = async (req, res) => {
     const data = await del(params.id);
 
     // delete image
-    const dir = "./public/img/" + data.rows[0].products_image;
+    const dir = "./" + data.rows[0].products_image;
     fs.unlink(dir, (err) => {
       if (err) throw err;
     });

@@ -28,7 +28,7 @@ const register = async (req, res) => {
       });
     }
     const hash = await argon.hash(users_password);
-    const usersImage = "profile.jgp";
+    const usersImage = "public/img/profile.jpg";
     const roles_id = 2;
 
     // create user

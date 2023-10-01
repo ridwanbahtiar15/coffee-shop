@@ -76,9 +76,9 @@ const addNewUsers = async (req, res) => {
       });
     }
 
-    let usersImage = "profile.jpg";
+    let usersImage = "public/img/profile.jpg";
     if (file) {
-      usersImage = file.filename;
+      usersImage = "public/img/profile.jpg" + file.filename;
     }
 
     const hash = await argon.hash(body.users_password);
@@ -160,7 +160,7 @@ const updateUsers = async (req, res) => {
     if (body.users_phone) usersPhone = body.users_phone;
     if (body.users_address) usersAddress = body.users_address;
     if (body.roles_id) rolesId = body.roles_id;
-    if (file) usersImage = file.filename;
+    if (file) usersImage = "public/img/" + file.filename;
 
     const data = await update(
       usersFullName,
@@ -175,9 +175,9 @@ const updateUsers = async (req, res) => {
 
     // jika gambar diubah
     if (file) {
-      if (dataById.rows[0].users_image != "profile.jpg") {
+      if (dataById.rows[0].users_image != "public/img/profile.jpg") {
         // delete image lama
-        const dir = "./public/img/" + dataById.rows[0].users_image;
+        const dir = "./" + dataById.rows[0].users_image;
         fs.unlink(dir, (err) => {
           if (err) throw err;
         });
@@ -245,7 +245,7 @@ const updateUserProfile = async (req, res) => {
     if (body.users_phone) usersPhone = body.users_phone;
     if (body.users_address) usersAddress = body.users_address;
     if (body.roles_id) rolesId = body.roles_id;
-    if (file) usersImage = file.filename;
+    if (file) usersImage = "public/img/" + file.filename;
 
     const data = await update(
       usersFullName,
@@ -260,9 +260,9 @@ const updateUserProfile = async (req, res) => {
 
     // jika gambar diubah
     if (file) {
-      if (dataById.rows[0].users_image != "profile.jpg") {
+      if (dataById.rows[0].users_image != "public/img/profile.jpg") {
         // delete image lama
-        const dir = "./public/img/" + dataById.rows[0].users_image;
+        const dir = "./" + dataById.rows[0].users_image;
         fs.unlink(dir, (err) => {
           if (err) throw err;
         });
@@ -291,7 +291,6 @@ const updateUserProfile = async (req, res) => {
     res.status(500).json({
       msg: "Internal Server Error",
     });
-    console.log(error);
   }
 };
 

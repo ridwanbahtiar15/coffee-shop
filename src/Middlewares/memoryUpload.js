@@ -1,5 +1,5 @@
 const multer = require("multer");
-// const { uploader } = require("../Helpers/cloudinary");
+const { uploader } = require("../Helpers/cloudinary");
 
 const storage = multer.memoryStorage();
 
@@ -37,16 +37,17 @@ const upload = (fieldname) => {
         });
       }
 
-      // try {
-      //   const { data, err } = await uploader();
-      //   res.status(200).json({
-      //     msg: "ok",
-      //   });
-      // } catch {
-      //   res.status(500).json({
-      //     msg: "Internal Server Error",
-      //   });
-      // }
+      try {
+        // mengambil id dari token atau db
+        const id = req.userInfo.users_id;
+        const { data, err } = await uploader(req, "user-profile", id);
+        req.urlImage = data.secure_url;
+        if (err) throw err;
+      } catch {
+        res.status(500).json({
+          msg: "Internal Server Error",
+        });
+      }
 
       next();
     });

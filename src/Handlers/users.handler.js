@@ -248,10 +248,8 @@ const updateUserProfile = async (req, res) => {
     if (body.roles_id) rolesId = body.roles_id;
     // if (file) usersImage = "public/img/" + file.filename;
 
-    // mengambil id dari token atau db
-    const id = userInfo.users_id;
-    const { data, err } = await uploader(req, "user-profile", id);
-    if (err) throw err;
+    if (req.urlImage) {
+    }
 
     const datas = await update(
       usersFullName,
@@ -259,7 +257,7 @@ const updateUserProfile = async (req, res) => {
       usersPassword,
       usersPhone,
       usersAddress,
-      data.secure_url,
+      req.urlImage,
       rolesId,
       userInfo.users_id
     );
@@ -282,7 +280,7 @@ const updateUserProfile = async (req, res) => {
     }
     res.status(200).json({
       msg: "Data has been updated!",
-      data: { url: data.secure_url },
+      data: { url: req.urlImage },
     });
   } catch (error) {
     if (error.code == "23505") {

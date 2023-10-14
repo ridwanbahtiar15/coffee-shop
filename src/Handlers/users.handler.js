@@ -1,6 +1,7 @@
 const argon = require("argon2");
 const fs = require("fs");
 const { sendMail } = require("../Helpers/sendMail.js");
+const { uploader } = require("../Helpers/cloudinary");
 
 const {
   getAll,
@@ -214,7 +215,7 @@ const updateUsers = async (req, res) => {
 
 const updateUserProfile = async (req, res) => {
   try {
-    const { body, userInfo, file } = req;
+    const { body, userInfo } = req;
     // if (
     //   !body.users_fullname ||
     //   !body.users_email ||
@@ -245,37 +246,43 @@ const updateUserProfile = async (req, res) => {
     if (body.users_phone) usersPhone = body.users_phone;
     if (body.users_address) usersAddress = body.users_address;
     if (body.roles_id) rolesId = body.roles_id;
-    if (file) usersImage = "public/img/" + file.filename;
+    // if (file) usersImage = "public/img/" + file.filename;
 
-    const data = await update(
+    // mengambil id dari token atau db
+    const id = userInfo.users_id;
+    const { data, err } = await uploader(req, "user-profile", id);
+    if (err) throw err;
+
+    const datas = await update(
       usersFullName,
       usersEmail,
       usersPassword,
       usersPhone,
       usersAddress,
-      usersImage,
+      data.secure_url,
       rolesId,
       userInfo.users_id
     );
 
     // jika gambar diubah
-    if (file) {
-      if (dataById.rows[0].users_image != "public/img/profile.jpg") {
-        // delete image lama
-        const dir = "./" + dataById.rows[0].users_image;
-        fs.unlink(dir, (err) => {
-          if (err) throw err;
-        });
-      }
-    }
+    // if (file) {
+    //   if (dataById.rows[0].users_image != "public/img/profile.jpg") {
+    //     // delete image lama
+    //     const dir = "./" + dataById.rows[0].users_image;
+    //     fs.unlink(dir, (err) => {
+    //       if (err) throw err;
+    //     });
+    //   }
+    // }
 
-    if (data.rowCount == 0) {
+    if (datas.rowCount == 0) {
       return res.status(500).json({
         msg: "Internal Server Error",
       });
     }
     res.status(200).json({
       msg: "Data has been updated!",
+      data: { url: data.secure_url },
     });
   } catch (error) {
     if (error.code == "23505") {
@@ -291,6 +298,7 @@ const updateUserProfile = async (req, res) => {
         msg: "Duplicate Email or Phone!",
       });
     }
+    console.log(error);
     res.status(500).json({
       msg: "Internal Server Error",
     });

@@ -41,7 +41,7 @@ const upload = (fieldname) => {
         // mengambil id dari token atau db
         const id = req.userInfo.users_id;
         const { data, err } = await uploader(req, "user-profile", id);
-        req.urlImage = data.secure_url;
+        if (data) req.urlImage = data.secure_url;
         if (err) throw err;
       } catch {
         res.status(500).json({

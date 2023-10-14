@@ -1,7 +1,6 @@
 const argon = require("argon2");
 const fs = require("fs");
 const { sendMail } = require("../Helpers/sendMail.js");
-const { uploader } = require("../Helpers/cloudinary");
 
 const {
   getAll,
@@ -249,6 +248,7 @@ const updateUserProfile = async (req, res) => {
     // if (file) usersImage = "public/img/" + file.filename;
 
     if (req.urlImage) {
+      usersImage = req.urlImage;
     }
 
     const datas = await update(
@@ -257,7 +257,7 @@ const updateUserProfile = async (req, res) => {
       usersPassword,
       usersPhone,
       usersAddress,
-      req.urlImage,
+      usersImage,
       rolesId,
       userInfo.users_id
     );
@@ -274,7 +274,7 @@ const updateUserProfile = async (req, res) => {
     // }
 
     if (datas.rowCount == 0) {
-      return res.status(500).json({
+      return res.status(502).json({
         msg: "Internal Server Error",
       });
     }
@@ -296,8 +296,7 @@ const updateUserProfile = async (req, res) => {
         msg: "Duplicate Email or Phone!",
       });
     }
-    console.log(error);
-    res.status(500).json({
+    res.status(501).json({
       msg: "Internal Server Error",
     });
   }

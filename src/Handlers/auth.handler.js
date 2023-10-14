@@ -71,11 +71,18 @@ const register = async (req, res) => {
 
 const login = async (req, res) => {
   const { body } = req;
+
+  if (!body.users_email || !body.users_password) {
+    return res.status(404).json({
+      msg: "Some values not found!",
+    });
+  }
+
   try {
     const result = await getUserByEmail(body.users_email);
     // check data
     if (!result.rows.length)
-      return res.status(404).json({
+      return res.status(401).json({
         msg: "Email not registered!",
       });
 

@@ -279,11 +279,14 @@ const updateUserProfile = async (req, res) => {
     });
   } catch (error) {
     if (error.code == "23505") {
-      // delete image saat error constraint
-      const dir = "./public/img/" + req.file.filename;
-      fs.unlink(dir, (err) => {
-        if (err) throw err;
-      });
+      if (req.file) {
+        // delete image saat error constraint
+        const dir = "./public/img/" + req.file.filename;
+        fs.unlink(dir, (err) => {
+          if (err) throw err;
+        });
+      }
+
       return res.status(400).json({
         msg: "Duplicate Email or Phone!",
       });

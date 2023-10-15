@@ -33,7 +33,7 @@ const getAllOrders = async (req, res) => {
 
 const addNewOrders = async (req, res) => {
   try {
-    const { body } = req;
+    const { body, userInfo } = req;
     // if (
     //   !body.users_id ||
     //   !body.payment_methods_id ||
@@ -49,23 +49,22 @@ const addNewOrders = async (req, res) => {
     //   });
     // }
     await insert(
-      body.users_id,
-      body.payment_methods_id,
-      body.deliveries_id,
-      body.promos_id,
+      userInfo.users_id,
+      (body.payment_methods_id = 1),
+      (body.deliveries_id = 1),
+      (body.promos_id = 0),
       body.products_id,
       body.sizes_id,
       body.orders_products_qty,
       body.hot_or_ice
     );
     res.status(200).json({
-      msg: "Data has been added!",
+      msg: "Product successfully ordered!",
     });
   } catch (error) {
     res.status(500).json({
       msg: "Internal Server Error",
     });
-    console.log(error);
   }
 };
 

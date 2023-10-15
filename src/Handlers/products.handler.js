@@ -269,10 +269,26 @@ const getPopularProducts = async (req, res) => {
   }
 };
 
+const getProductsById = async (req, res) => {
+  try {
+    const { params } = req;
+    const data = await getById(params.id);
+    res.status(200).json({
+      msg: "Success",
+      result: data.rows,
+    });
+  } catch (error) {
+    res.status(500).json({
+      msg: "Interval Server Error",
+    });
+  }
+};
+
 module.exports = {
   getAllProducts,
   addNewProducts,
   updateProducts,
   deleteProducts,
   getPopularProducts,
+  getProductsById,
 };

@@ -10,6 +10,7 @@ const {
   updateProducts,
   deleteProducts,
   getPopularProducts,
+  getProductsById,
 } = require("../Handlers/products.handler");
 
 productsRouter.get("/", isLogin, authUsers([1, 2]), getAllProducts);
@@ -29,5 +30,6 @@ productsRouter.patch(
 );
 productsRouter.delete("/:id", isLogin, authUsers([1]), deleteProducts);
 productsRouter.get("/popular", getPopularProducts);
+productsRouter.get("/:id", getProductsById);
 
 module.exports = productsRouter;

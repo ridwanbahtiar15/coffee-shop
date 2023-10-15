@@ -1,4 +1,5 @@
 const fs = require("fs");
+const { uploader } = require("../Helpers/cloudinary");
 
 const {
   getAll,
@@ -9,6 +10,7 @@ const {
   getPopular,
   filtersProducts,
   count,
+  updateImage,
 } = require("../Models/products.model");
 
 const getAllProducts = async (req, res) => {
@@ -121,26 +123,40 @@ const addNewProducts = async (req, res) => {
       });
     }
 
-    if (!file) {
-      return res.status(404).json({
-        msg: "Image must be uploaded!",
-      });
-    }
+    // if (!file) {
+    //   return res.status(404).json({
+    //     msg: "Image must be uploaded!",
+    //   });
+    // }
 
-    const products_image = "public/img/" + req.file.filename;
+    // const products_image = "public/img/" + req.file.filename;
 
-    await insert(
+    // if (!req.urlImage)
+    //   return res.status(404).json({
+    //     msg: "Image must be uploaded!",
+    //   });
+
+    const datas = await insert(
       body.products_name,
       body.products_price,
       body.products_desc,
       body.products_stock,
-      products_image,
       body.categories_id
     );
+
+    const id = datas.rows[0].products_id;
+    const { data, err } = await uploader(req, "product", id);
+    if (data) req.urlImage = data.secure_url;
+    if (err) throw err;
+
+    updateImage(id, req.urlImage);
+
     res.status(200).json({
       msg: "Data has been added!",
+      data: { url: req.urlImage },
     });
   } catch (error) {
+    console.log(error);
     res.status(500).json({
       msg: "Internal Server Error",
     });
@@ -210,7 +226,6 @@ const updateProducts = async (req, res) => {
     res.status(500).json({
       msg: "Internal Server Error",
     });
-    console.log(error);
   }
 };
 

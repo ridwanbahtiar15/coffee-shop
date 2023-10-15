@@ -37,17 +37,25 @@ const upload = (fieldname) => {
         });
       }
 
-      try {
-        // mengambil id dari token atau db
-        const id = req.userInfo.users_id;
-        const { data, err } = await uploader(req, "user-profile", id);
-        if (data) req.urlImage = data.secure_url;
-        if (err) throw err;
-      } catch {
-        res.status(500).json({
-          msg: "Internal Server Error",
-        });
-      }
+      // try {
+      //   // mengambil id dari token atau db
+      //   let id;
+      //   let nameFile;
+      //   if (req.originalUrl == "/users/profile/edit") {
+      //     id = req.userInfo.users_id;
+      //     nameFile = "user-profile";
+      //   } else {
+      //     id = 2;
+      //     nameFile = "product";
+      //   }
+      //   const { data, err } = await uploader(req, nameFile, id);
+      //   if (data) req.urlImage = data.secure_url;
+      //   if (err) throw err;
+      // } catch {
+      //   res.status(500).json({
+      //     msg: "Internal Server Error",
+      //   });
+      // }
 
       next();
     });

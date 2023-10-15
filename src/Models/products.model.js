@@ -18,17 +18,15 @@ const insert = (
   prodcutsPrice,
   prodcutsDesc,
   prodcutsStock,
-  prodcutsImage,
   categoriesId
 ) => {
   const sql =
-    "insert into products (products_name, products_price, products_desc,products_stock, products_image, categories_id) values ($1, $2, $3, $4, $5, $6)";
+    "insert into products (products_name, products_price, products_desc, products_stock, categories_id) values ($1, $2, $3, $4, $5) returning products_id";
   const values = [
     productsName,
     prodcutsPrice,
     prodcutsDesc,
     prodcutsStock,
-    prodcutsImage,
     categoriesId,
   ];
   return db.query(sql, values);
@@ -166,6 +164,12 @@ const count = (productsName, category, minRange = 10000, maxRange = 100000) => {
   }
 };
 
+const updateImage = (id, image) => {
+  const sql = "update products set products_image = $2 where products_id = $1";
+  const values = [id, image];
+  return db.query(sql, values);
+};
+
 module.exports = {
   getAll,
   getById,
@@ -175,4 +179,5 @@ module.exports = {
   getPopular,
   filtersProducts,
   count,
+  updateImage,
 };

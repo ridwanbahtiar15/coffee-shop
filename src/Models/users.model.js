@@ -82,6 +82,12 @@ const softDelete = (id) => {
   return db.query(sql, values);
 };
 
+const updateUserImage = (id, image) => {
+  const sql = "update users set users_image = $2 where users_id = $1";
+  const values = [id, image];
+  return db.query(sql, values);
+};
+
 module.exports = {
   getAll,
   getById,
@@ -89,4 +95,5 @@ module.exports = {
   insert,
   update,
   softDelete,
+  updateUserImage,
 };

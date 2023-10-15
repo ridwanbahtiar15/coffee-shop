@@ -1,6 +1,7 @@
 const argon = require("argon2");
 const fs = require("fs");
 const { sendMail } = require("../Helpers/sendMail.js");
+const { uploader } = require("../Helpers/cloudinary");
 
 const {
   getAll,
@@ -9,6 +10,7 @@ const {
   insert,
   update,
   softDelete,
+  updateUserImage,
 } = require("../Models/users.model");
 
 const { insertToken } = require("../Models/auth.model");
@@ -247,10 +249,6 @@ const updateUserProfile = async (req, res) => {
     if (body.roles_id) rolesId = body.roles_id;
     // if (file) usersImage = "public/img/" + file.filename;
 
-    if (req.urlImage) {
-      usersImage = req.urlImage;
-    }
-
     const datas = await update(
       usersFullName,
       usersEmail,
@@ -261,6 +259,20 @@ const updateUserProfile = async (req, res) => {
       rolesId,
       userInfo.users_id
     );
+
+    const { data, err } = await uploader(
+      req,
+      "user-profile",
+      userInfo.users_id
+    );
+    if (data) req.urlImage = data.secure_url;
+    if (err) throw err;
+
+    updateUserImage(userInfo.users_id, req.urlImage);
+
+    if (req.urlImage) {
+      usersImage = req.urlImage;
+    }
 
     // jika gambar diubah
     // if (file) {

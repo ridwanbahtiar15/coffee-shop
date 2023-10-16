@@ -268,11 +268,11 @@ const updateUserProfile = async (req, res) => {
     if (data) req.urlImage = data.secure_url;
     if (err) throw err;
 
-    updateUserImage(userInfo.users_id, req.urlImage);
-
     if (req.urlImage) {
+      updateUserImage(userInfo.users_id, req.urlImage);
       usersImage = req.urlImage;
     }
+    // console.log(usersImage);
 
     // jika gambar diubah
     // if (file) {

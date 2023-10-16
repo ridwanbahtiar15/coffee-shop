@@ -51,7 +51,7 @@ const addNewOrders = async (req, res) => {
     await insert(
       userInfo.users_id,
       (body.payment_methods_id = 1),
-      (body.deliveries_id = 1),
+      body.deliveries_id,
       (body.promos_id = 0),
       body.products_id,
       body.sizes_id,
@@ -65,6 +65,7 @@ const addNewOrders = async (req, res) => {
     res.status(500).json({
       msg: "Internal Server Error",
     });
+    console.log(error);
   }
 };
 
@@ -110,6 +111,28 @@ const deleteOrders = async (req, res) => {
         msg: "Error Constraint",
       });
     }
+    res.status(500).json({
+      msg: "Internal Server Error",
+    });
+  }
+};
+
+const getOrdersById = async (req, res) => {
+  try {
+    const { userInfo } = req;
+
+    const result = getById(userInfo.users_id);
+    if (result.rows.length == 0) {
+      return res.status(404).json({
+        msg: "Orders not found!",
+        result: [],
+      });
+    }
+    res.status(200).json({
+      msg: "Success",
+      result: result.rows,
+    });
+  } catch (error) {
     res.status(500).json({
       msg: "Internal Server Error",
     });

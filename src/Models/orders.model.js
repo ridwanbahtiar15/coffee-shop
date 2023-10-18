@@ -14,9 +14,9 @@ const getAll = (page = 1, limit = 99) => {
   return db.query(sql, values);
 };
 
-const getById = (id) => {
+const getByUserId = (id) => {
   const sql =
-    "select o.payment_methods_id, o.deliveries_id, o.promos_id, o.orders_status, o.orders_total from orders o where orders_id = $1";
+    "select o.orders_id, o.payment_methods_id, o.deliveries_id, o.promos_id, o.orders_status, o.orders_total, o.created_at from orders o where users_id = $1";
   const values = [id];
   return db.query(sql, values);
 };
@@ -100,4 +100,4 @@ const pagination = (page, limit) => {
   return db.query(sql, values);
 };
 
-module.exports = { getAll, getById, insert, update, del, pagination };
+module.exports = { getAll, getByUserId, insert, update, del, pagination };

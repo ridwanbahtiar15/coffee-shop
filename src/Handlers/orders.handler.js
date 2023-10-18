@@ -1,6 +1,6 @@
 const {
   getAll,
-  getById,
+  getByUserId,
   insert,
   update,
   del,
@@ -115,11 +115,11 @@ const deleteOrders = async (req, res) => {
   }
 };
 
-const getOrdersById = async (req, res) => {
+const getOrdersByUserId = async (req, res) => {
   try {
     const { userInfo } = req;
 
-    const result = getById(userInfo.users_id);
+    const result = await getByUserId(userInfo.users_id);
     if (result.rows.length == 0) {
       return res.status(404).json({
         msg: "Orders not found!",
@@ -134,6 +134,7 @@ const getOrdersById = async (req, res) => {
     res.status(500).json({
       msg: "Internal Server Error",
     });
+    console.log(error);
   }
 };
 
@@ -142,4 +143,5 @@ module.exports = {
   addNewOrders,
   updateOrders,
   deleteOrders,
+  getOrdersByUserId,
 };

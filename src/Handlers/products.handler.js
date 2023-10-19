@@ -41,8 +41,9 @@ const getAllProducts = async (req, res) => {
       );
 
       if (result.rows.length == 0) {
-        return res.status(404).json({
+        return res.status(200).json({
           msg: "Products not found!",
+          result: [],
         });
       }
 
@@ -104,13 +105,12 @@ const getAllProducts = async (req, res) => {
     res.status(500).json({
       msg: "Internal Server Error",
     });
-    console.log(error);
   }
 };
 
 const addNewProducts = async (req, res) => {
   try {
-    const { body, file } = req;
+    const { body } = req;
     if (
       !body.products_name ||
       !body.products_price ||

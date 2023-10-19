@@ -1,9 +1,12 @@
 const {
   getAll,
   getByUserId,
+  getById,
   insert,
   update,
   del,
+  getDetailOrderById,
+  getUserByOrderId,
 } = require("../Models/orders.model");
 
 const getAllOrders = async (req, res) => {
@@ -138,10 +141,45 @@ const getOrdersByUserId = async (req, res) => {
   }
 };
 
+const getDetailOrder = async (req, res) => {
+  try {
+    const { params } = req;
+    const result = await getDetailOrderById(params.id);
+
+    res.status(200).json({
+      msg: "Success",
+      result: result.rows,
+    });
+  } catch (error) {
+    res.status(500).json({
+      msg: "Internal Server Error",
+    });
+  }
+};
+
+const getUser = async (req, res) => {
+  try {
+    const { params } = req;
+    const result = await getUserByOrderId(params.id);
+
+    res.status(200).json({
+      msg: "Success",
+      result: result.rows,
+    });
+  } catch (error) {
+    res.status(500).json({
+      msg: "Internal Server Error",
+    });
+    console.log(error);
+  }
+};
+
 module.exports = {
   getAllOrders,
   addNewOrders,
   updateOrders,
   deleteOrders,
   getOrdersByUserId,
+  getDetailOrder,
+  getUser,
 };

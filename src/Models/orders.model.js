@@ -21,6 +21,13 @@ const getByUserId = (id) => {
   return db.query(sql, values);
 };
 
+const getById = (id) => {
+  const sql =
+    "select o.orders_id, o.payment_methods_id, o.deliveries_id, o.promos_id, o.orders_status, o.orders_total, o.created_at from orders o where users_id = $1";
+  const values = [id];
+  return db.query(sql, values);
+};
+
 const insert = async (
   userId,
   paymentMethodsId,
@@ -100,4 +107,39 @@ const pagination = (page, limit) => {
   return db.query(sql, values);
 };
 
-module.exports = { getAll, getByUserId, insert, update, del, pagination };
+const getDetailOrderById = (ordersId) => {
+  const sql = `select p.products_name, p.products_price, p.products_image, 
+                s.sizes_name, op.orders_products_qty, op.hot_or_ice, d.deliveries_name, o.orders_status, o.orders_total
+                from orders_products op
+                join products p on op.products_id = p.products_id
+                join sizes s on op.sizes_id = s.sizes_id
+                join orders o on op.orders_id = o.orders_id
+                join deliveries d on o.deliveries_id = d.deliveries_id
+                where o.orders_id = $1`;
+  const values = [ordersId];
+  return db.query(sql, values);
+};
+
+const getUserByOrderId = (ordersId) => {
+  const sql = `select u.users_fullname, u.users_address, u.users_phone, pm.payment_methods_name, o.created_at,
+  d.deliveries_name, o.orders_status, o.orders_total
+  from orders o 
+  join users u on o.users_id = u.users_id
+  join payment_methods pm on o.payment_methods_id = pm.payment_methods_id 
+  join deliveries d on o.deliveries_id = d.deliveries_id
+  where o.orders_id = $1`;
+  const values = [ordersId];
+  return db.query(sql, values);
+};
+
+module.exports = {
+  getAll,
+  getByUserId,
+  getById,
+  insert,
+  update,
+  del,
+  pagination,
+  getDetailOrderById,
+  getUserByOrderId,
+};

@@ -86,9 +86,9 @@ const filtersProducts = (
 
   if (productsName && category && minRange && maxRange) {
     sql += ` join categories c on p.categories_id = c.categories_id
-              where p.products_name like $1
+              where LOWER(p.products_name) like $1
               and products_price >= $3 and products_price <= $4
-              and c.categories_name = $2
+              and LOWER(c.categories_name) = $2
               order by p.created_at asc
               limit $5 offset $6`;
     const offset = page * limit - limit;
@@ -105,7 +105,7 @@ const filtersProducts = (
 
   if (category) {
     sql += ` join categories c on p.categories_id = c.categories_id
-                where c.categories_name = $1
+                where LOWER(c.categories_name) = $1
                 and products_price >= $2 and products_price <= $3
                 order by p.created_at asc
                 limit $4 offset $5`;
@@ -116,7 +116,7 @@ const filtersProducts = (
 
   if (productsName) {
     sql += ` join categories c on p.categories_id = c.categories_id
-                where p.products_name like $1
+                where LOWER(p.products_name) like $1
                 and products_price >= $2 and products_price <= $3
                 order by p.created_at asc
                 limit $4 offset $5`;

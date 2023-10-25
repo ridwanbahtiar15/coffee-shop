@@ -11,6 +11,7 @@ const {
   deleteProducts,
   getPopularProducts,
   getProductsById,
+  getTotalSales,
 } = require("../Handlers/products.handler");
 
 productsRouter.get("/", isLogin, authUsers([1, 2]), getAllProducts);
@@ -30,6 +31,7 @@ productsRouter.patch(
 );
 productsRouter.delete("/:id", isLogin, authUsers([1]), deleteProducts);
 productsRouter.get("/popular", getPopularProducts);
-productsRouter.get("/:id", getProductsById);
+productsRouter.post("/totalsales", isLogin, authUsers([1, 2]), getTotalSales);
+productsRouter.get("/:id", isLogin, authUsers([1, 2]), getProductsById);
 
 module.exports = productsRouter;

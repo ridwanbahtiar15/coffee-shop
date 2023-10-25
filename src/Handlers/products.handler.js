@@ -11,6 +11,7 @@ const {
   filtersProducts,
   count,
   updateImage,
+  totalSales,
 } = require("../Models/products.model");
 
 const getAllProducts = async (req, res) => {
@@ -270,6 +271,39 @@ const getPopularProducts = async (req, res) => {
   }
 };
 
+const getTotalSales = async (req, res) => {
+  try {
+    const { body } = req;
+    // return console.log(body.start_date);
+
+    const data = await totalSales(body.start_date, body.end_date);
+    // const dateFormat = new Date(data.rows[0].order_date);
+    // const newDateFormat = `${dateFormat.getDate()}-${
+    //   dateFormat.getMonth() + 1
+    // }`;
+    // const newData = data.rows;
+    // const dateArr = [];
+    // newData.forEach((e) => {
+    //   const dateFormat = new Date(e.order_date);
+    //   dateArr.push(
+    //     `${dateFormat.getDate()}-${
+    //       dateFormat.getMonth() + 1
+    //     }-${dateFormat.getFullYear()}`
+    //   );
+    // });
+    // console.log(newDateFormat);
+    res.status(200).json({
+      msg: "Success",
+      result: data.rows,
+    });
+  } catch (error) {
+    res.status(500).json({
+      msg: "Interval Server Error",
+    });
+    console.log(error);
+  }
+};
+
 const getProductsById = async (req, res) => {
   try {
     const { params } = req;
@@ -292,4 +326,5 @@ module.exports = {
   deleteProducts,
   getPopularProducts,
   getProductsById,
+  getTotalSales,
 };

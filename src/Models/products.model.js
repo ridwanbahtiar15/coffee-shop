@@ -62,14 +62,16 @@ const del = (id) => {
   return db.query(sql, values);
 };
 
-const getPopular = () => {
-  const sql = `
-  select p.products_id, p.products_name, sum(op.orders_products_qty) as sold
+const getBestSelling = (startDate, endDate) => {
+  const sql = `select p.products_id, p.products_name, 
+  sum(op.orders_products_qty) as sold ,
+  sum(op.orders_products_subtotal) as profit
   from orders_products op
   join products p on op.products_id = p.products_id
-  group by p.products_id
-  order by sold desc`;
-  return db.query(sql);
+  where op.created_at >= $1 and op.created_at <= $2
+  group by p.products_id`;
+  const values = [startDate, endDate];
+  return db.query(sql, values);
 };
 
 const filtersProducts = (
@@ -191,7 +193,7 @@ module.exports = {
   insert,
   update,
   del,
-  getPopular,
+  getBestSelling,
   filtersProducts,
   count,
   updateImage,

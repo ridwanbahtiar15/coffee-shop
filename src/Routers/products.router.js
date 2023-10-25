@@ -9,7 +9,7 @@ const {
   addNewProducts,
   updateProducts,
   deleteProducts,
-  getPopularProducts,
+  bestSellingProduct,
   getProductsById,
   getTotalSales,
 } = require("../Handlers/products.handler");
@@ -30,7 +30,7 @@ productsRouter.patch(
   updateProducts
 );
 productsRouter.delete("/:id", isLogin, authUsers([1]), deleteProducts);
-productsRouter.get("/popular", getPopularProducts);
+productsRouter.post("/bestproduct", bestSellingProduct);
 productsRouter.post("/totalsales", isLogin, authUsers([1, 2]), getTotalSales);
 productsRouter.get("/:id", isLogin, authUsers([1, 2]), getProductsById);
 

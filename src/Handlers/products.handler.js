@@ -7,7 +7,7 @@ const {
   insert,
   update,
   del,
-  getPopular,
+  getBestSelling,
   filtersProducts,
   count,
   updateImage,
@@ -257,9 +257,10 @@ const deleteProducts = async (req, res) => {
   }
 };
 
-const getPopularProducts = async (req, res) => {
+const bestSellingProduct = async (req, res) => {
   try {
-    const data = await getPopular();
+    const { body } = req;
+    const data = await getBestSelling(body.start_date, body.end_date);
     res.status(200).json({
       msg: "Success",
       result: data.rows,
@@ -274,24 +275,7 @@ const getPopularProducts = async (req, res) => {
 const getTotalSales = async (req, res) => {
   try {
     const { body } = req;
-    // return console.log(body.start_date);
-
     const data = await totalSales(body.start_date, body.end_date);
-    // const dateFormat = new Date(data.rows[0].order_date);
-    // const newDateFormat = `${dateFormat.getDate()}-${
-    //   dateFormat.getMonth() + 1
-    // }`;
-    // const newData = data.rows;
-    // const dateArr = [];
-    // newData.forEach((e) => {
-    //   const dateFormat = new Date(e.order_date);
-    //   dateArr.push(
-    //     `${dateFormat.getDate()}-${
-    //       dateFormat.getMonth() + 1
-    //     }-${dateFormat.getFullYear()}`
-    //   );
-    // });
-    // console.log(newDateFormat);
     res.status(200).json({
       msg: "Success",
       result: data.rows,
@@ -324,7 +308,7 @@ module.exports = {
   addNewProducts,
   updateProducts,
   deleteProducts,
-  getPopularProducts,
+  bestSellingProduct,
   getProductsById,
   getTotalSales,
 };

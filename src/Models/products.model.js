@@ -7,8 +7,7 @@ const getAll = () => {
 };
 
 const getById = (id) => {
-  const sql =
-    "select p.products_name, p.products_price, p.products_desc, p.products_stock, p.products_image, p.categories_id from products p where p.products_id = $1";
+  const sql = `select p.products_name, p.products_price, p.products_desc, p.products_stock, p.products_image, p.categories_id, c.categories_name from products p join categories c on p.categories_id = c.categories_id where p.products_id = $1`;
   const values = [id];
   return db.query(sql, values);
 };

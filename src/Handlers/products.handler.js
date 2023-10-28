@@ -1,5 +1,6 @@
 const fs = require("fs");
 const { uploader } = require("../Helpers/cloudinary");
+const cloudinary = require("cloudinary");
 
 const {
   getAll,
@@ -196,16 +197,16 @@ const updateProducts = async (req, res) => {
     if (body.categories_id) categoriesID = body.categories_id;
 
     // jika gambar diubah
-    if (file) {
-      // delete image lama
-      const dir = "./" + dataById.rows[0].products_image;
-      fs.unlink(dir, (err) => {
-        if (err) throw err;
-      });
-      productsImage = "public/img/" + req.file.filename;
-    }
+    // if (file) {
+    //   // delete image lama
+    //   const dir = "./" + dataById.rows[0].products_image;
+    //   fs.unlink(dir, (err) => {
+    //     if (err) throw err;
+    //   });
+    //   productsImage = "public/img/" + req.file.filename;
+    // }
 
-    const data = await update(
+    const datas = await update(
       productsName,
       productsPrice,
       productsDesc,
@@ -215,7 +216,15 @@ const updateProducts = async (req, res) => {
       params.id
     );
 
-    if (data.rowCount == 0) {
+    const { data, err } = await uploader(req, "product", params.id);
+    if (data) req.urlImage = data.secure_url;
+    if (err) throw err;
+
+    if (req.urlImage) {
+      updateImage(params.id, req.urlImage);
+    }
+
+    if (datas.rowCount == 0) {
       return res.status(500).json({
         msg: "Internal Server Error",
       });
@@ -228,22 +237,36 @@ const updateProducts = async (req, res) => {
     res.status(500).json({
       msg: "Internal Server Error",
     });
+    console.log(error);
   }
 };
 
 const deleteProducts = async (req, res) => {
   try {
-    const { params } = req;
-    const data = await del(params.id);
+    const { query } = req;
+
+    const imageUrl = query.imageUrl;
+    const urlArr = imageUrl.split("/");
+    const image = urlArr[urlArr.length - 1];
+    const imageName = image.split(".")[0];
+    const data = await del(query.id);
+
+    cloudinary.v2.uploader.destroy(
+      "coffee-shop/" + imageName,
+      async (err, result) => {
+        if (err) throw err;
+        console.log(result);
+      }
+    );
 
     // delete image
-    const dir = "./" + data.rows[0].products_image;
-    fs.unlink(dir, (err) => {
-      if (err) throw err;
-    });
+    // const dir = "./" + data.rows[0].products_image;
+    // fs.unlink(dir, (err) => {
+    //   if (err) throw err;
+    // });
 
     res.status(200).json({
-      msg: `Products ${data.rows[0].products_name}, id = ${params.id} has been deleted!`,
+      msg: `Products ${data.rows[0].products_name} has been deleted!`,
     });
   } catch (error) {
     if (error.code == "23503") {
@@ -254,6 +277,7 @@ const deleteProducts = async (req, res) => {
     res.status(500).json({
       msg: "Internal Server Error",
     });
+    console.log(error);
   }
 };
 
@@ -300,6 +324,7 @@ const getProductsById = async (req, res) => {
     res.status(500).json({
       msg: "Interval Server Error",
     });
+    console.log(error);
   }
 };
 

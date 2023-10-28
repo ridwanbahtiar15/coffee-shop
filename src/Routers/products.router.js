@@ -29,7 +29,7 @@ productsRouter.patch(
   upload("products_image"),
   updateProducts
 );
-productsRouter.delete("/:id", isLogin, authUsers([1]), deleteProducts);
+productsRouter.delete("/", isLogin, authUsers([1]), deleteProducts);
 productsRouter.post("/bestproduct", bestSellingProduct);
 productsRouter.post("/totalsales", isLogin, authUsers([1, 2]), getTotalSales);
 productsRouter.get("/:id", isLogin, authUsers([1, 2]), getProductsById);

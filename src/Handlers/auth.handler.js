@@ -28,7 +28,8 @@ const register = async (req, res) => {
       });
     }
     const hash = await argon.hash(users_password);
-    const usersImage = "public/img/profile.jpg";
+    const usersImage =
+      "https://res.cloudinary.com/dhxdnljzm/image/upload/v1698614695/profile_wygrk3.jpg";
     const roles_id = 2;
 
     // create user

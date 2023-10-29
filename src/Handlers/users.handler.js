@@ -85,7 +85,7 @@ const getUserDetail = async (req, res) => {
 
 const addNewUsers = async (req, res) => {
   try {
-    const { body, file } = req;
+    const { body } = req;
     if (
       !body.users_fullname ||
       !body.users_email ||
@@ -99,10 +99,8 @@ const addNewUsers = async (req, res) => {
       });
     }
 
-    let usersImage = "public/img/profile.jpg";
-    if (file) {
-      usersImage = "public/img/profile.jpg" + file.filename;
-    }
+    let usersImage =
+      "https://res.cloudinary.com/dhxdnljzm/image/upload/v1698614695/profile_wygrk3.jpg";
 
     const hash = await argon.hash(body.users_password);
     const user = await insert(
@@ -127,19 +125,29 @@ const addNewUsers = async (req, res) => {
       },
     });
 
+    const id = user.rows[0].users_id;
+    const { data, err } = await uploader(req, "user-profile", id);
+    if (data) req.urlImage = data.secure_url;
+    if (err) throw err;
+
+    if (req.urlImage) {
+      updateUserImage(id, req.urlImage);
+      usersImage = req.urlImage;
+    }
+
     res.status(200).json({
       msg: "Data has been added!",
       response: info.response,
     });
   } catch (error) {
     if (error.code == "23505") {
-      if (req.file) {
-        // delete image saat error constraint
-        const dir = "./public/img/" + req.file.filenames;
-        fs.unlink(dir, (err) => {
-          if (err) throw err;
-        });
-      }
+      // if (req.file) {
+      //   // delete image saat error constraint
+      //   const dir = "./public/img/" + req.file.filenames;
+      //   fs.unlink(dir, (err) => {
+      //     if (err) throw err;
+      //   });
+      // }
       return res.status(400).json({
         msg: "Duplicate Email or Phone!",
       });
@@ -350,12 +358,13 @@ const deleteUsers = async (req, res) => {
     const { params } = req;
     const data = await softDelete(params.id);
     res.status(200).json({
-      msg: `User ${data.rows[0].users_fullname}, id = ${params.id} has been soft deleted!`,
+      msg: `User ${data.rows[0].users_fullname} has been soft deleted!`,
     });
   } catch (error) {
     res.status(500).json({
       msg: "Internal Server Error",
     });
+    console.log(error);
   }
 };
 

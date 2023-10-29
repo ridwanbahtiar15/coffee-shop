@@ -173,15 +173,16 @@ const updateImage = (id, image) => {
 
 const totalSales = (startDate, endDate) => {
   const sql = ` select 
-  date(op.created_at) as order_date, 
-  sum(op.orders_products_qty) as cup
-from 
-  orders_products op
-where 
-  op.created_at >= $1
-  and op.created_at <= $2
-group by 
- op.created_at`;
+                  date(op.created_at) as order_date, 
+                  sum(op.orders_products_qty) as cup
+                from 
+                  orders_products op
+                where 
+                  op.created_at >= $1
+                  and op.created_at <= $2
+                group by 
+                op.created_at
+                order by op.created_at`;
   const values = [startDate, endDate];
   return db.query(sql, values);
 };

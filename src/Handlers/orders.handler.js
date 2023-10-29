@@ -73,11 +73,11 @@ const addNewOrders = async (req, res) => {
 const updateOrders = async (req, res) => {
   try {
     const { body, params } = req;
-    if (!body.orders_status) {
-      return res.status(404).json({
-        msg: "Some values not found!",
-      });
-    }
+    // if (!body.orders_status) {
+    //   return res.status(404).json({
+    //     msg: "Some values not found!",
+    //   });
+    // }
     const dataById = await getById(params.id);
     let ordersStatus = dataById.rows[0].orders_status;
     if (body.orders_status) ordersStatus = body.orders_status;
@@ -96,6 +96,7 @@ const updateOrders = async (req, res) => {
     res.status(500).json({
       msg: "Internal Server Error",
     });
+    console.log(error);
   }
 };
 

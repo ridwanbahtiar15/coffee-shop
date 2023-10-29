@@ -6,7 +6,8 @@ const { upload } = require("../Middlewares/memoryUpload");
 
 const {
   getAllUsers,
-  getUsersById,
+  getUserProfile,
+  getUserDetail,
   addNewUsers,
   updateUsers,
   updateUserProfile,
@@ -14,7 +15,8 @@ const {
 } = require("../Handlers/users.handler");
 
 usersRouter.get("/", isLogin, authUsers([1]), getAllUsers);
-usersRouter.get("/profile", isLogin, authUsers([1, 2]), getUsersById);
+usersRouter.get("/profile", isLogin, authUsers([1, 2]), getUserProfile);
+usersRouter.get("/:id", isLogin, authUsers([1, 2]), getUserDetail);
 usersRouter.post(
   "/",
   isLogin,

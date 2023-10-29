@@ -2,13 +2,20 @@ const db = require("../Configs/postgre.js");
 // const client = await db.connect();
 
 const getAll = (page = 1, limit = 99) => {
-  const sql = `select o.orders_id, u.users_fullname, py.payment_methods_name, d.deliveries_name, pr.promos_name, o.orders_status, o.orders_total
-  from orders o 
-  join users u on o.users_id = u.users_id 
-  join payment_methods py on o.payment_methods_id = py.payment_methods_id 
-  join deliveries d on o.deliveries_id = d.deliveries_id 
-  join promos pr on o.promos_id = pr.promos_id
-  offset $1 limit $2`;
+  const sql = `SELECT
+                o.orders_id, o.created_at, o.orders_status, o.orders_total,
+                STRING_AGG (
+              p.products_name,
+                    ', '
+                  ORDER BY
+                    op.orders_products_id
+                ) product
+              FROM
+                orders o
+              INNER JOIN orders_products op on o.orders_id = op.orders_id 
+              INNER JOIN products p on op.products_id = p.products_id
+              group by o.orders_id
+              OFFSET $1 LIMIT $2`;
   const offset = page * limit - limit;
   const values = [offset, limit];
   return db.query(sql, values);
@@ -23,7 +30,7 @@ const getByUserId = (id) => {
 
 const getById = (id) => {
   const sql =
-    "select o.orders_id, o.payment_methods_id, o.deliveries_id, o.promos_id, o.orders_status, o.orders_total, o.created_at from orders o where users_id = $1";
+    "select o.orders_id, o.payment_methods_id, o.deliveries_id, o.promos_id, o.orders_status, o.orders_total, o.created_at from orders o where orders_id = $1";
   const values = [id];
   return db.query(sql, values);
 };
@@ -109,7 +116,7 @@ const pagination = (page, limit) => {
 
 const getDetailOrderById = (ordersId) => {
   const sql = `select p.products_name, p.products_price, p.products_image, 
-                s.sizes_name, op.orders_products_qty, op.hot_or_ice, d.deliveries_name, o.orders_status, o.orders_total
+                s.sizes_name, op.orders_products_qty, op.hot_or_ice, op.orders_products_subtotal, d.deliveries_name, o.orders_status, o.orders_total
                 from orders_products op
                 join products p on op.products_id = p.products_id
                 join sizes s on op.sizes_id = s.sizes_id

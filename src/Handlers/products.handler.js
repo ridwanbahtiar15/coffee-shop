@@ -1,4 +1,4 @@
-const fs = require("fs");
+// const fs = require("fs");
 const { uploader } = require("../Helpers/cloudinary");
 const cloudinary = require("cloudinary");
 
@@ -168,7 +168,7 @@ const addNewProducts = async (req, res) => {
 
 const updateProducts = async (req, res) => {
   try {
-    const { body, params, file } = req;
+    const { body, params } = req;
     // if (
     //   !body.products_name ||
     //   !body.products_price ||

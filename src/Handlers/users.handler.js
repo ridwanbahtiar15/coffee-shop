@@ -6,7 +6,7 @@ const { uploader } = require("../Helpers/cloudinary");
 const {
   getAll,
   getById,
-  getUserProfile,
+  getUserById,
   insert,
   update,
   softDelete,
@@ -41,9 +41,30 @@ const getAllUsers = async (req, res) => {
   }
 };
 
-const getUsersById = async (req, res) => {
+const getUserProfile = async (req, res) => {
   try {
-    const result = await getUserProfile(req.userInfo.users_id);
+    const result = await getUserById(req.userInfo.users_id);
+    if (result.rows.length == 0) {
+      return res.status(404).json({
+        msg: "Users not found!",
+        result: [],
+      });
+    }
+
+    res.status(200).json({
+      msg: "Success",
+      result: result.rows,
+    });
+  } catch (error) {
+    res.status(500).json({
+      msg: "Internal Server Error",
+    });
+  }
+};
+const getUserDetail = async (req, res) => {
+  try {
+    const { params } = req;
+    const result = await getUserById(params.id);
     if (result.rows.length == 0) {
       return res.status(404).json({
         msg: "Users not found!",
@@ -126,6 +147,7 @@ const addNewUsers = async (req, res) => {
     res.status(500).json({
       msg: "Internal Server Error",
     });
+    console.log(error);
   }
 };
 
@@ -164,7 +186,7 @@ const updateUsers = async (req, res) => {
     if (body.roles_id) rolesId = body.roles_id;
     if (file) usersImage = "public/img/" + file.filename;
 
-    const data = await update(
+    const datas = await update(
       usersFullName,
       usersEmail,
       usersPassword,
@@ -176,17 +198,26 @@ const updateUsers = async (req, res) => {
     );
 
     // jika gambar diubah
-    if (file) {
-      if (dataById.rows[0].users_image != "public/img/profile.jpg") {
-        // delete image lama
-        const dir = "./" + dataById.rows[0].users_image;
-        fs.unlink(dir, (err) => {
-          if (err) throw err;
-        });
-      }
+    // if (file) {
+    //   if (dataById.rows[0].users_image != "public/img/profile.jpg") {
+    //     // delete image lama
+    //     const dir = "./" + dataById.rows[0].users_image;
+    //     fs.unlink(dir, (err) => {
+    //       if (err) throw err;
+    //     });
+    //   }
+    // }
+
+    const { data, err } = await uploader(req, "user-profile", params.id);
+    if (data) req.urlImage = data.secure_url;
+    if (err) throw err;
+
+    if (req.urlImage) {
+      updateUserImage(params.id, req.urlImage);
+      usersImage = req.urlImage;
     }
 
-    if (data.rowCount == 0) {
+    if (datas.rowCount == 0) {
       return res.status(500).json({
         msg: "Internal Server Error",
       });
@@ -296,13 +327,13 @@ const updateUserProfile = async (req, res) => {
     });
   } catch (error) {
     if (error.code == "23505") {
-      if (req.file) {
-        // delete image saat error constraint
-        const dir = "./public/img/" + req.file.filename;
-        fs.unlink(dir, (err) => {
-          if (err) throw err;
-        });
-      }
+      // if (req.file) {
+      //   // delete image saat error constraint
+      //   const dir = "./public/img/" + req.file.filename;
+      //   fs.unlink(dir, (err) => {
+      //     if (err) throw err;
+      //   });
+      // }
 
       return res.status(400).json({
         msg: "Duplicate Email or Phone!",
@@ -330,7 +361,8 @@ const deleteUsers = async (req, res) => {
 
 module.exports = {
   getAllUsers,
-  getUsersById,
+  getUserProfile,
+  getUserDetail,
   addNewUsers,
   updateUsers,
   updateUserProfile,

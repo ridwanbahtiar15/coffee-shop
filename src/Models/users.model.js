@@ -20,9 +20,9 @@ const getById = (id) => {
   return db.query(sql, values);
 };
 
-const getUserProfile = (id) => {
+const getUserById = (id) => {
   const sql =
-    "select u.users_fullname, u.users_email, u.users_phone, u.users_address, u.users_image, r.roles_name from users u join roles r on u.roles_id = r.roles_id where users_id = $1";
+    "select u.users_fullname, u.users_email, u.users_phone, u.users_address, u.users_image, u.roles_id, r.roles_name from users u join roles r on u.roles_id = r.roles_id where users_id = $1";
   const values = [id];
   return db.query(sql, values);
 };
@@ -91,7 +91,7 @@ const updateUserImage = (id, image) => {
 module.exports = {
   getAll,
   getById,
-  getUserProfile,
+  getUserById,
   insert,
   update,
   softDelete,

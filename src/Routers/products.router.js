@@ -14,7 +14,7 @@ const {
   getTotalSales,
 } = require("../Handlers/products.handler");
 
-productsRouter.get("/", isLogin, authUsers([1, 2]), getAllProducts);
+productsRouter.get("/", authUsers([1, 2]), getAllProducts);
 productsRouter.post(
   "/",
   isLogin,

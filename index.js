@@ -1,5 +1,5 @@
 require("dotenv").config();
-const cors = require("cors");
+// const cors = require("cors");
 const express = require("express");
 const app = express();
 const port = 3000;
@@ -17,12 +17,12 @@ app.use(express.urlencoded({ extended: false }));
 // });
 
 // cors
-app.use(
-  cors({
-    origin: "http://localhost:5173",
-    methods: ["POST", "PATCH", "DELETE"],
-  })
-);
+// app.use(
+//   cors({
+//     origin: "http://localhost:5173",
+//     methods: ["POST", "PATCH", "DELETE"],
+//   })
+// );
 
 const mainRouter = require("./src/Routers/main.router");
 app.use(mainRouter);

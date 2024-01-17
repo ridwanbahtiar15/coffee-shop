@@ -19,7 +19,7 @@ app.use(express.urlencoded({ extended: false }));
 // cors
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: "*",
     methods: ["POST", "PATCH", "DELETE"],
   })
 );

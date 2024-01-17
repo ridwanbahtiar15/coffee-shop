@@ -20,19 +20,19 @@ For development, you will only need Node Js, PostgreSQL and a node global packag
 
 If the installation was successful, you should be able to run the following command.
 
-    $ node --version
+    node --version
     v18.16.0
 
-    $ npm --version
+    npm --version
     9.5.1
 
 ###
 
 ## Install
 
-    $ git clone https://github.com/ridwanbahtiar15/coffe-shop
-    $ cd PROJECT_TITLE
-    $ npm init -y
+    git clone https://github.com/ridwanbahtiar15/coffe-shop
+    cd PROJECT_TITLE
+    npm init -y
 
 ## Configure app
 
@@ -48,4 +48,4 @@ Create file `.env` then edit it with your settings. You will need:
 
 ## Running the project
 
-    $ node index
+    node index

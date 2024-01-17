@@ -79,7 +79,7 @@ const filtersProducts = (
   minRange = 10000,
   maxRange = 100000,
   page = 1,
-  limit = 99
+  limit = 6
 ) => {
   let sql = `select p.products_id, p.products_name, p.products_price, p.products_desc, p.products_stock, p.products_image, c.categories_name
   from products p`;
@@ -141,13 +141,13 @@ const count = (productsName, category, minRange = 10000, maxRange = 100000) => {
   let sql = `select count(*) from products p`;
   const values = [];
   if (productsName && category && minRange && maxRange) {
-    sql += ` join categories c on p.categories_id = c.categories_id where p.products_name like $1 and c.categories_name = $2 and p.products_price >= $3 and p.products_price <= $4`;
+    sql += ` join categories c on p.categories_id = c.categories_id where LOWER(p.products_name) like $1 and c.categories_name = $2 and p.products_price >= $3 and p.products_price <= $4`;
     values.push(`%${productsName}%`, category, minRange, maxRange);
     return db.query(sql, values);
   }
 
   if (productsName) {
-    sql += ` where p.products_name like $1 and p.products_price >= $2 and p.products_price <= $3`;
+    sql += ` where LOWER(p.products_name) like $1 and p.products_price >= $2 and p.products_price <= $3`;
     values.push(`%${productsName}%`, minRange, maxRange);
     return db.query(sql, values);
   }

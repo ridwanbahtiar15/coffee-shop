@@ -1,8 +1,9 @@
 const db = require("../Configs/postgre.js");
 // const client = await db.connect();
 
-const getAll = (page = 1, limit = 99) => {
-  const sql = `SELECT
+const getFilterOrder = (noOrder, page = 1, limit) => {
+  let values = [];
+  let sql = `SELECT
                 o.orders_id, o.created_at, o.orders_status, o.orders_total,
                 STRING_AGG (
               p.products_name,
@@ -16,8 +17,30 @@ const getAll = (page = 1, limit = 99) => {
               INNER JOIN products p on op.products_id = p.products_id
               group by o.orders_id
               OFFSET $1 LIMIT $2`;
+
+  if (noOrder) {
+    sql = `SELECT
+              o.orders_id, o.created_at, o.orders_status, o.orders_total,
+              STRING_AGG (
+            p.products_name,
+                  ', '
+                ORDER BY
+                  op.orders_products_id
+              ) product
+            FROM
+              orders o
+            INNER JOIN orders_products op on o.orders_id = op.orders_id
+            INNER JOIN products p on op.products_id = p.products_id
+            WHERE o.orders_id = $1
+            group by o.orders_id
+            OFFSET $2 LIMIT $3`;
+    const offset = page * limit - limit;
+    values.push(noOrder, offset, limit);
+    return db.query(sql, values);
+  }
+
   const offset = page * limit - limit;
-  const values = [offset, limit];
+  values.push(offset, limit);
   return db.query(sql, values);
 };
 
@@ -114,6 +137,17 @@ const pagination = (page, limit) => {
   return db.query(sql, values);
 };
 
+const count = (noOrder) => {
+  let sql = `SELECT count(*) FROM orders o`;
+  const values = [];
+  if (noOrder) {
+    sql = `SELECT count(*) FROM orders o WHERE o.orders_id = $1`;
+    values.push(noOrder);
+    return db.query(sql, values);
+  }
+  return db.query(sql, values);
+};
+
 const getDetailOrderById = (ordersId) => {
   const sql = `select p.products_name, p.products_price, p.products_image, 
                 s.sizes_name, op.orders_products_qty, op.hot_or_ice, op.orders_products_subtotal, d.deliveries_name, o.orders_status, o.orders_total
@@ -140,7 +174,7 @@ const getUserByOrderId = (ordersId) => {
 };
 
 module.exports = {
-  getAll,
+  getFilterOrder,
   getByUserId,
   getById,
   insert,
@@ -149,4 +183,5 @@ module.exports = {
   pagination,
   getDetailOrderById,
   getUserByOrderId,
+  count,
 };

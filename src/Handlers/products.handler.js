@@ -3,7 +3,7 @@ const { uploader } = require("../Helpers/cloudinary");
 const cloudinary = require("cloudinary");
 
 const {
-  getAll,
+  // getAll,
   getById,
   insert,
   update,
@@ -19,90 +19,97 @@ const getAllProducts = async (req, res) => {
   try {
     const { query } = req;
     let result;
-    if (
-      query.name ||
-      query.category ||
-      query.minrange ||
-      query.maxrange ||
-      query.page ||
-      query.limit
-    ) {
+    // if (
+    //   query.name ||
+    //   query.category ||
+    //   query.minrange ||
+    //   query.maxrange ||
+    //   query.page ||
+    //   limit
+    // ) {
+    if (query.minrange || query.maxrange) {
       if (query.minrange >= query.maxrange) {
         return res.status(400).json({
           msg: "The range your input is not correct!",
         });
       }
-
-      result = await filtersProducts(
-        query.name,
-        query.category,
-        query.minrange,
-        query.maxrange,
-        query.page,
-        query.limit
-      );
-
-      if (result.rows.length == 0) {
-        return res.status(200).json({
-          msg: "Products not found!",
-          result: [],
-        });
-      }
-
-      const metaResult = await count(
-        query.name,
-        query.category,
-        query.minrange,
-        query.maxrange
-      );
-
-      const totalData = metaResult.rows[0].count;
-      const isLastPage = Math.ceil(
-        totalData / parseInt(query.limit) <= parseInt(query.page)
-      );
-
-      let linkNext = `${req.baseUrl}?page=${
-        parseInt(query.page) + 1
-      }&limit=${parseInt(query.limit)}`;
-
-      if (query.name) linkNext += `&name=${query.name}`;
-      if (query.category) linkNext += `&category=${query.category}`;
-      if (query.minrange && query.maxrange)
-        linkNext += `&minrange=${query.minrange}&maxrange=${query.maxrange}`;
-
-      let linkPrev = `${req.baseUrl}?page=${
-        parseInt(query.page) - 1
-      }&limit=${parseInt(query.limit)}`;
-
-      if (query.name) linkPrev += `&name=${query.name}`;
-      if (query.category) linkPrev += `&category=${query.category}`;
-      if (query.minrange && query.maxrange)
-        linkPrev += `&minrange=${query.minrange}&maxrange=${query.maxrange}`;
-
-      return res.status(200).json({
-        msg: "Success",
-        result: result.rows,
-        meta: {
-          page: query.page,
-          totalData,
-          next: isLastPage ? null : linkNext,
-          prev: query.page == "1" ? null : linkPrev,
-        },
-      });
     }
 
-    result = await getAll();
+    let page = 1;
+    query.page ? (page = query.page) : (page = 1);
+    let limit = 5;
+
+    result = await filtersProducts(
+      query.name,
+      query.category,
+      query.minrange,
+      query.maxrange,
+      page,
+      limit
+    );
 
     if (result.rows.length == 0) {
-      return res.status(404).json({
+      return res.status(200).json({
         msg: "Products not found!",
+        result: [],
       });
     }
 
-    res.status(200).json({
+    const metaResult = await count(
+      query.name,
+      query.category,
+      query.minrange,
+      query.maxrange
+    );
+
+    const totalData = metaResult.rows[0].count;
+    const isLastPage = Math.ceil(totalData / parseInt(limit) <= parseInt(page));
+    const totalPage = Math.ceil(totalData / limit);
+
+    let linkNext = `${req.baseUrl}?page=${parseInt(page) + 1}&limit=${parseInt(
+      limit
+    )}`;
+
+    if (query.name) linkNext += `&name=${query.name}`;
+    if (query.category) linkNext += `&category=${query.category}`;
+    if (query.minrange && query.maxrange)
+      linkNext += `&minrange=${query.minrange}&maxrange=${query.maxrange}`;
+
+    let linkPrev = `${req.baseUrl}?page=${parseInt(page) - 1}&limit=${parseInt(
+      limit
+    )}`;
+
+    if (query.name) linkPrev += `&name=${query.name}`;
+    if (query.category) linkPrev += `&category=${query.category}`;
+    if (query.minrange && query.maxrange)
+      linkPrev += `&minrange=${query.minrange}&maxrange=${query.maxrange}`;
+
+    return res.status(200).json({
       msg: "Success",
       result: result.rows,
+      meta: {
+        page: page,
+        totalData,
+        totalPage,
+        limit,
+        next: isLastPage ? null : linkNext,
+        prev: page == "1" ? null : linkPrev,
+      },
     });
+    // }
+
+    // result = await getAll();
+
+    // if (result.rows.length == 0) {
+    //   return res.status(404).json({
+    //     msg: "Products not found!",
+    //   });
+    // }
+
+    // res.status(200).json({
+    //   msg: "Success",
+    //   result: result.rows,
+    // });
   } catch (error) {
     res.status(500).json({
       msg: "Internal Server Error",

@@ -1,5 +1,5 @@
 const {
-  getAll,
+  getFilterOrder,
   getByUserId,
   getById,
   insert,
@@ -7,15 +7,18 @@ const {
   del,
   getDetailOrderById,
   getUserByOrderId,
+  count,
 } = require("../Models/orders.model");
 
 const getAllOrders = async (req, res) => {
   try {
     const { query } = req;
     let result;
-    query.page || query.limit
-      ? (result = await getAll(query.page, query.limit))
-      : (result = await getAll());
+    let page = 1;
+    query.page ? (page = query.page) : (page = 1);
+    let limit = 5;
+
+    result = await getFilterOrder(query.noorder, page, limit);
 
     if (result.rows.length == 0) {
       return res.status(404).json({
@@ -23,11 +26,36 @@ const getAllOrders = async (req, res) => {
         result: [],
       });
     }
-    res.status(200).json({
+
+    const metaResult = await count(query.noorder);
+    const totalData = metaResult.rows[0].count;
+    const isLastPage = Math.ceil(totalData / parseInt(limit) <= parseInt(page));
+    const totalPage = Math.ceil(totalData / limit);
+
+    let linkNext = `${req.baseUrl}?page=${parseInt(page) + 1}&limit=${parseInt(
+      limit
+    )}`;
+    if (query.name) linkNext += `&noorder=${query.noorder}`;
+
+    let linkPrev = `${req.baseUrl}?page=${parseInt(page) - 1}&limit=${parseInt(
+      limit
+    )}`;
+    if (query.name) linkPrev += `&noorder=${query.noorder}`;
+
+    return res.status(200).json({
       msg: "Success",
       result: result.rows,
+      meta: {
+        page: page,
+        totalData,
+        totalPage,
+        limit,
+        next: isLastPage ? null : linkNext,
+        prev: page == "1" ? null : linkPrev,
+      },
     });
   } catch (error) {
+    console.log(error);
     res.status(500).json({
       msg: "Internal Server Error",
     });

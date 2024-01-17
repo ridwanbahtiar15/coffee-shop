@@ -111,7 +111,7 @@ const login = async (req, res) => {
       users_email,
       roles_id,
     };
-    jwt.sign(payload, jwtKey, { expiresIn: "40m", issuer }, (err, token) => {
+    jwt.sign(payload, jwtKey, { expiresIn: "24h", issuer }, (err, token) => {
       if (err) throw err;
       res.status(200).json({
         msg: `Welcome ${users_fullname}`,
@@ -171,18 +171,22 @@ const activation = async (req, res) => {
 };
 
 const logout = async (req, res) => {
-  const authHeader = req.header("Authorization");
-  const token = authHeader.split(" ")[1];
+  try {
+    const authHeader = req.header("Authorization");
+    const token = authHeader.split(" ")[1];
 
-  // cek token dari db
-  const sql = "delete from users_tokenjwt where token_jwt = $1";
-  const values = [token];
-  const tokenJwt = await db.query(sql, values);
+    // cek token dari db
+    const sql = "delete from users_tokenjwt where token_jwt = $1";
+    const values = [token];
+    const tokenJwt = await db.query(sql, values);
 
-  if (tokenJwt.rowCount == 1) {
-    return res.status(200).json({
-      msg: "Success Logout!",
-    });
+    if (tokenJwt.rowCount == 1) {
+      return res.status(200).json({
+        msg: "Success Logout!",
+      });
+    }
+  } catch (err) {
+    return res.status(401).json({ msg: "Internal Server Error" });
   }
 };
 

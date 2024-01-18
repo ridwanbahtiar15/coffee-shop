@@ -1,10 +1,15 @@
-# Coffee Shop
+# Coffe Shop
 
-A project coffe shop, build with using Node Js, Express Js and PostgreSQL
+<!-- ABOUT THE PROJECT -->
+## About The Project
+
+A backend api on a web application for ordering coffee
 
 ---
 
-## Requirements
+## Built With
+
+* [![ExpressJS][ExpressJS-logo]][ExpressJS-url]
 
 For development, you will only need Node Js, PostgreSQL and a node global package like Express Js, node-postgres, Json Web Token, Multer, argon2, dotenv installed in your environement.
 
@@ -49,3 +54,8 @@ Create file `.env` then edit it with your settings. You will need:
 ## Running the project
 
     node index
+
+
+<!-- MARKDOWN LINKS & IMAGES -->
+[ExpressJS-url]: https://expressjs.com
+[ExpressJS-logo]: https://badgen.net/#static/Express%20JS/4.2/black

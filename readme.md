@@ -58,4 +58,4 @@ Create file `.env` then edit it with your settings. You will need:
 
 <!-- MARKDOWN LINKS & IMAGES -->
 [ExpressJS-url]: https://expressjs.com
-[ExpressJS-logo]: https://badgen.net/#static/Express%20JS/4.2/black
+[ExpressJS-logo]: https://img.shields.io/badge/Express%20JS-black

@@ -1,14 +1,15 @@
-# Coffe Shop
+# Coffe Shop With Express JS
 
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-A backend api on a web application for ordering coffee
+A web api project for ordering coffee and transactions online. There are 4 operations that can be performed, Get (fetching data), Post (insert data), Update (update partial data), delete (delete data)
 
 ---
 
 ## Built With
 
+*
 * [![ExpressJS][ExpressJS-logo]][ExpressJS-url]
 
 For development, you will only need Node Js, PostgreSQL and a node global package like Express Js, node-postgres, Json Web Token, Multer, argon2, dotenv installed in your environement.
@@ -57,5 +58,9 @@ Create file `.env` then edit it with your settings. You will need:
 
 
 <!-- MARKDOWN LINKS & IMAGES -->
+[NodeJS-url]: https://nodejs.org
+[NodeJS-logo]: https://img.shields.io/badge/Node%20JS-green
 [ExpressJS-url]: https://expressjs.com
 [ExpressJS-logo]: https://img.shields.io/badge/Express%20JS-black
+[PostgreSql-url]: https://www.postgresql.org/
+[PostgreSql-logo]: https://img.shields.io/badge/Postgre%20SQL-Blue

@@ -64,4 +64,4 @@ Create file `.env` then edit it with your settings. You will need:
 [ExpressJS-url]: https://expressjs.com
 [ExpressJS-logo]: https://img.shields.io/badge/Express%20JS-black
 [PostgreSql-url]: https://www.postgresql.org/
-[PostgreSql-logo]: https://img.shields.io/badge/Postgre%20SQL-Blue
+[PostgreSql-logo]: https://img.shields.io/badge/Postgre%20SQL-blue

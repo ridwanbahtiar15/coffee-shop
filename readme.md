@@ -9,8 +9,9 @@ A web api project for ordering coffee and transactions online. There are 4 opera
 
 ## Built With
 
-*
+* [![NodeJS][NodeJS-logo]][NodeJS-url]
 * [![ExpressJS][ExpressJS-logo]][ExpressJS-url]
+* [![PostgreSql][PostgreSql-logo]][PostgreSql-url]
 
 For development, you will only need Node Js, PostgreSQL and a node global package like Express Js, node-postgres, Json Web Token, Multer, argon2, dotenv installed in your environement.
 

@@ -5,8 +5,6 @@
 
 A web api project for ordering coffee and transactions online. There are 4 operations that can be performed, Get (fetching data), Post (insert data), Update (update partial data), delete (delete data)
 
----
-
 ## Built With
 
 * [![NodeJS][NodeJS-logo]][NodeJS-url]

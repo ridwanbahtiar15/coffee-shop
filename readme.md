@@ -19,8 +19,6 @@ A web api project for ordering coffee and transactions online. There are 4 opera
 - [![Argon2][Argon2-logo]][Argon2-url]
 - [![DotEnv][DotEnv-logo]][DotEnv-url]
 
-For development, you will only need Node Js, PostgreSQL and a node global package like Express Js, node-postgres, Json Web Token, Multer, argon2, dotenv installed in your environement.
-
 ## Install And Run Locally
 
 Clone project from github repository

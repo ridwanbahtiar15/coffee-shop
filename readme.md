@@ -19,31 +19,14 @@ A web api project for ordering coffee and transactions online. There are 4 opera
 
 For development, you will only need Node Js, PostgreSQL and a node global package like Express Js, node-postgres, Json Web Token, Multer, argon2, dotenv installed in your environement.
 
-### Node
 
-- #### Node installation on Windows
+## Install And Run Locally
 
-  Just go on [official Node.js website](https://nodejs.org/) and download the installer.
-  Also, be sure to have `git` available in your PATH, `npm` might need it (You can find git [here](https://git-scm.com/)).
+Clone Project
 
-- #### Other Operating Systems
-  You can find more information about the installation on the [official Node.js website](https://nodejs.org/) and the [official NPM website](https://npmjs.org/).
+  node index
 
-If the installation was successful, you should be able to run the following command.
-
-    node --version
-    v18.16.0
-
-    npm --version
-    9.5.1
-
-###
-
-## Install
-
-    git clone https://github.com/ridwanbahtiar15/coffe-shop
-    cd PROJECT_TITLE
-    npm init -y
+  
 
 ## Configure app
 

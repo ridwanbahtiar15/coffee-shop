@@ -23,19 +23,19 @@ A web api project for ordering coffee and transactions online. There are 4 opera
 
 Clone project from github repository
 
-    git clone https://github.com/ridwanbahtiar15/coffe-shop.git
+    $ git clone https://github.com/ridwanbahtiar15/coffe-shop.git
 
 go to folder coffee-shop
 
-    cd coffee-shop
+    $ cd coffee-shop
 
 install dependencies
 
-    npm install
+    $ npm install
 
 Start the server
 
-    npm run dev
+    $ npm run dev
 
 ## Configure app
 

@@ -2,40 +2,18 @@
 
 <!-- ABOUT THE PROJECT -->
 
-## About The Project
+<img src="./coffee-shop-logo.webp" width="200px" alt="logo"></img>
 
 A web api project for ordering coffee and transactions online. There are 4 operations that can be performed, Get (fetching data), Post (insert data), Update (update partial data), delete (delete data)
 
 ## Built With
 
-- [![NodeJS][NodeJS-logo]][NodeJS-url]
-- [![PostgreSql][PostgreSql-logo]][PostgreSql-url]
-
-### Package
-
-- [![ExpressJS][ExpressJS-logo]][ExpressJS-url]
-- [![JsonWebToken][JsonWebToken-logo]][JsonWebToken-url]
-- [![Multer][Multer-logo]][Multer-url]
-- [![Argon2][Argon2-logo]][Argon2-url]
-- [![DotEnv][DotEnv-logo]][DotEnv-url]
-
-## Install And Run Locally
-
-Clone project from github repository
-
-    $ git clone https://github.com/ridwanbahtiar15/coffe-shop.git
-
-go to folder coffee-shop
-
-    $ cd coffee-shop
-
-install dependencies
-
-    $ npm install
-
-Start the server
-
-    $ npm run dev
+- [Node JS](https://nodejs.org)
+- [Express JS](https://expressjs.com)
+- [Postgre SQL](https://www.postgresql.org/)
+- [JSON Web Token](https://www.npmjs.com/package/jsonwebtoken)
+- [Multer](https://www.npmjs.com/package/multer)
+- [Cloudinary](https://www.npmjs.com/package/cloudinary)
 
 ## Configure app
 
@@ -59,6 +37,24 @@ according to your needs. You will need:
 | CLOUDINERY_NAME      | Your Cloudinary Name      |
 | CLOUDINERY_KEY       | Your Cloudinary Key       |
 | CLOUDINERY_SECRET    | Your Cloudinary Secret    |
+
+## Install And Run Locally
+
+1.  Clone project from github repository
+
+        $ git clone https://github.com/ridwanbahtiar15/coffe-shop.git
+
+2.  go to folder coffee-shop
+
+        $ cd coffee-shop
+
+3.  install dependencies
+
+        $ npm install
+
+4.  Start the server
+
+        $ npm run dev
 
 ## Api Refrences
 
@@ -105,25 +101,5 @@ User
 ## Related Project
 
 [Front End With React JS](https://github.com/ridwanbahtiar15/coffee-shop-react-vite.git)
+
 [Back End With Golang](https://github.com/ridwanbahtiar15/coffee-shop-golang.git)
-
-## Credit
-
-[Ridwan Bahtiar](https://github.com/ridwanbahtiar15)
-
-<!-- MARKDOWN LINKS & IMAGES -->
-
-[NodeJS-url]: https://nodejs.org
-[NodeJS-logo]: https://img.shields.io/badge/Node%20JS-green
-[ExpressJS-url]: https://expressjs.com
-[ExpressJS-logo]: https://img.shields.io/badge/Express%20JS-black
-[PostgreSql-url]: https://www.postgresql.org/
-[PostgreSql-logo]: https://img.shields.io/badge/Postgre%20SQL-blue
-[JsonWebToken-url]: https://www.npmjs.com/package/jsonwebtoken
-[JsonWebToken-logo]: https://img.shields.io/badge/Json%20Web%20Token-red
-[Multer-url]: https://www.npmjs.com/package/multer
-[Multer-logo]: https://img.shields.io/badge/Multer-grey
-[Argon2-url]: https://www.npmjs.com/package/argon2
-[Argon2-logo]: https://img.shields.io/badge/Argon2-orange
-[DotEnv-url]: https://www.npmjs.com/package/dotenv
-[DotEnv-logo]: https://img.shields.io/badge/Dotenv-black

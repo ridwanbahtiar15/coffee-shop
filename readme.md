@@ -104,4 +104,5 @@ User
 
 ## Related Project
 
-[Front End With React JS](https://github.com/ridwanbahtiar15/E-Wallet-Frontend)
+- [Front End With React JS](https://github.com/ridwanbahtiar15/E-Wallet-Frontend)
+- [Backend End With Golang](https://github.com/ridwanbahtiar15/coffee-shop-golang)

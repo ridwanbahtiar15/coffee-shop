@@ -2,7 +2,9 @@
 
 <!-- ABOUT THE PROJECT -->
 
-<img src="./coffee-shop-logo.webp" width="200px" alt="logo"></img>
+<div style="text-align:center">
+        <img src="./coffee-shop-logo.webp" width="200px" alt="logo"></img>
+</div>
 
 A web api project for ordering coffee and transactions online. There are 4 operations that can be performed, Get (fetching data), Post (insert data), Update (update partial data), delete (delete data)
 
@@ -20,23 +22,25 @@ A web api project for ordering coffee and transactions online. There are 4 opera
 Create file `.env` then edit it with your settings
 according to your needs. You will need:
 
-| Key                  | Value                     |
-| -------------------- | ------------------------- |
-| DB_HOST              | Your Database Host        |
-| DB_NAME              | Your Database Host        |
-| DB_USER              | Your Database User        |
-| DB_PASS              | Your Database Password    |
-| JWT_KEY              | Your JWT Key              |
-| ISSUER               | Your Issuer               |
-| MAIL_SERVICE         | Your Mail Servie          |
-| MAIL_AUTH_TYPE       | Your Auth Type            |
-| MAIL_USER            | Your Email                |
-| GOOGLE_CLIENT_ID     | Your Google Client Id     |
-| GOOGLE_CLIENT_SECRET | Your Google Client Secret |
-| GOOGLE_REFRESH_TOKEN | Your Google Token         |
-| CLOUDINERY_NAME      | Your Cloudinary Name      |
-| CLOUDINERY_KEY       | Your Cloudinary Key       |
-| CLOUDINERY_SECRET    | Your Cloudinary Secret    |
+<pre>
+        <code>
+                DB_HOST = Your Database Host
+                DB_NAME = Your Database Host
+                DB_USER = Your Database User
+                DB_PASS = Your Database Password
+                JWT_KEY = Your JWT Key
+                ISSUER = Your Issuer
+                MAIL_SERVICE = Your Mail Servie
+                MAIL_AUTH_TYPE = Your Auth Type
+                MAIL_USER Your = Email
+                GOOGLE_CLIENT_ID = Your Google Client Id
+                GOOGLE_CLIENT_SECRET = Your Google Client Secret
+                GOOGLE_REFRESH_TOKEN = Your Google Token
+                CLOUDINERY_NAME = Your Cloudinary Name
+                CLOUDINERY_KEY = Your Cloudinary Key
+                CLOUDINERY_SECRET = Your Cloudinary Secret
+        </code>
+</pre>
 
 ## Install And Run Locally
 
@@ -96,10 +100,8 @@ User
 
 ## Documentation
 
-[Postman Documentation](https://documenter.getpostman.com/view/28541505/2s9YC8uVci)
+[Postman Documentation](https://documenter.getpostman.com/view/28541505/2s9Yyqhgjq)
 
 ## Related Project
 
-[Front End With React JS](https://github.com/ridwanbahtiar15/coffee-shop-react-vite.git)
-
-[Back End With Golang](https://github.com/ridwanbahtiar15/coffee-shop-golang.git)
+[Front End With React JS](https://github.com/ridwanbahtiar15/E-Wallet-Frontend)

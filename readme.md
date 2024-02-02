@@ -1,4 +1,4 @@
-# Coffe Shop With Express JS
+# Coffee Shop With Express JS
 
 <!-- ABOUT THE PROJECT -->
 

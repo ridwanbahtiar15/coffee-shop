@@ -2,7 +2,7 @@
 
 <!-- ABOUT THE PROJECT -->
 
-<div style="align:center">
+<div style="display:block;text-align:center">
         <img src="./coffee-shop-logo.webp" width="200px" alt="logo"></img>
 </div>
 

@@ -2,7 +2,7 @@
 
 <!-- ABOUT THE PROJECT -->
 
-<div style="text-align:center">
+<div style="align:center">
         <img src="./coffee-shop-logo.webp" width="200px" alt="logo"></img>
 </div>
 
@@ -23,23 +23,23 @@ Create file `.env` then edit it with your settings
 according to your needs. You will need:
 
 <pre>
-        <code>
-                DB_HOST = Your Database Host
-                DB_NAME = Your Database Host
-                DB_USER = Your Database User
-                DB_PASS = Your Database Password
-                JWT_KEY = Your JWT Key
-                ISSUER = Your Issuer
-                MAIL_SERVICE = Your Mail Servie
-                MAIL_AUTH_TYPE = Your Auth Type
-                MAIL_USER Your = Email
-                GOOGLE_CLIENT_ID = Your Google Client Id
-                GOOGLE_CLIENT_SECRET = Your Google Client Secret
-                GOOGLE_REFRESH_TOKEN = Your Google Token
-                CLOUDINERY_NAME = Your Cloudinary Name
-                CLOUDINERY_KEY = Your Cloudinary Key
-                CLOUDINERY_SECRET = Your Cloudinary Secret
-        </code>
+<code>
+DB_HOST = Your Database Host
+DB_NAME = Your Database Host
+DB_USER = Your Database User
+DB_PASS = Your Database Password
+JWT_KEY = Your JWT Key
+ISSUER = Your Issuer
+MAIL_SERVICE = Your Mail Servie
+MAIL_AUTH_TYPE = Your Auth Type
+MAIL_USER Your = Email
+GOOGLE_CLIENT_ID = Your Google Client Id
+GOOGLE_CLIENT_SECRET = Your Google Client Secret
+GOOGLE_REFRESH_TOKEN = Your Google Token
+CLOUDINERY_NAME = Your Cloudinary Name
+CLOUDINERY_KEY = Your Cloudinary Key
+CLOUDINERY_SECRET = Your Cloudinary Secret
+</code>
 </pre>
 
 ## Install And Run Locally

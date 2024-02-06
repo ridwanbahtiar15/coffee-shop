@@ -36,9 +36,9 @@ MAIL_USER Your = Email
 GOOGLE_CLIENT_ID = Your Google Client Id
 GOOGLE_CLIENT_SECRET = Your Google Client Secret
 GOOGLE_REFRESH_TOKEN = Your Google Token
-CLOUDINERY_NAME = Your Cloudinary Name
-CLOUDINERY_KEY = Your Cloudinary Key
-CLOUDINERY_SECRET = Your Cloudinary Secret
+CLOUDINARY_NAME = Your Cloudinary Name
+CLOUDINARY_KEY = Your Cloudinary Key
+CLOUDINARY_SECRET = Your Cloudinary Secret
 </code>
 </pre>
 
